@@ -11,14 +11,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.skywo.wifilistdemo.fg.adapter.WiFiListAdapter_old;
-import com.example.skywo.wifilistdemo.fg.manager.WiFiSessionManager;
+import com.example.skywo.wifilistdemo.fg.manager.WiFiSessionManager_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity_old extends AppCompatActivity {
 
-    private WiFiSessionManager wiFiSessionManager;
+    private WiFiSessionManager_old wiFiSessionManagerOld;
     private ListView listView;
     private WiFiListAdapter_old myAdapter;
     private List<ScanResult> results = new ArrayList<>();
@@ -33,17 +33,17 @@ public class MainActivity_old extends AppCompatActivity {
 
         initUI();
 
-        wiFiSessionManager = WiFiSessionManager.getInstance(this);
+        wiFiSessionManagerOld = WiFiSessionManager_old.getInstance(this);
 
-        if(wiFiSessionManager.enable()){
+        if(wiFiSessionManagerOld.enable()){
             Log.i(TAG, "当前WiFi可用");
 
             //SSID: Skyworth, BSSID: d8:15:0d:6c:20:48, Supplicant state: COMPLETED, RSSI: -54, Link speed: 72Mbps, Frequency: 2462MHz, Net ID: 27, Metered hint: false, score: 100
             Log.i(TAG,getWiFiInfo());
             // 创建wifi锁
-            wiFiSessionManager.creatWifiLock(WIFI_LOCK_NAME);
+            wiFiSessionManagerOld.creatWifiLock(WIFI_LOCK_NAME);
             // 锁定WifiLock
-            wiFiSessionManager.acquireWifiLock();
+            wiFiSessionManagerOld.acquireWifiLock();
             searchWiFi();
             showToast("开始搜索WiFi");
         }else {
@@ -74,7 +74,7 @@ public class MainActivity_old extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //判断wifi是否被lock锁持用
-        wiFiSessionManager.releaseWifiLock();
+        wiFiSessionManagerOld.releaseWifiLock();
     }
 
     /**
@@ -83,7 +83,7 @@ public class MainActivity_old extends AppCompatActivity {
      */
     public void openWiFi(View view) {
         // 判断是否已经打开WiFi
-        wiFiSessionManager.openWifi();
+        wiFiSessionManagerOld.openWifi();
     }
 
     /**
@@ -92,7 +92,7 @@ public class MainActivity_old extends AppCompatActivity {
      * @param view
      */
     public void closeWiFi(View view) {
-        wiFiSessionManager.closeWifi();
+        wiFiSessionManagerOld.closeWifi();
     }
 
     /**
@@ -100,7 +100,7 @@ public class MainActivity_old extends AppCompatActivity {
      *
      */
     public String getWiFiInfo() {
-        return wiFiSessionManager.getWifiInfo();
+        return wiFiSessionManagerOld.getWifiInfo();
     }
 
 
@@ -110,21 +110,21 @@ public class MainActivity_old extends AppCompatActivity {
      */
     public void searchWiFi() {
         Log.i(TAG, "searchWiFi");
-        if (!wiFiSessionManager.enable()) {
+        if (!wiFiSessionManagerOld.enable()) {
             return;
         }
         // 开始扫描
-        wiFiSessionManager.startScan();
+        wiFiSessionManagerOld.startScan();
         // mWiFiManager.getScanResults()获取搜索的WiFi内容
         // 返回结果是当前设备所在区域能搜索出来的WiFi列表
-       // results = wiFiSessionManager.getWifiList();
+       // results = wiFiSessionManagerOld.getWifiList();
         Log.i(TAG, "results.size:"+ results.size());
         for(ScanResult s : results){
             Log.i(TAG,s.SSID);
         }
 
         // 获取扫描已经保存的wifi列表配置集合
-        List<WifiConfiguration> configuration = wiFiSessionManager.getConfiguration();
+        List<WifiConfiguration> configuration = wiFiSessionManagerOld.getConfiguration();
 
 //    for (WifiConfiguration configuration:wifiConfigs)
 //    {
@@ -147,12 +147,12 @@ public class MainActivity_old extends AppCompatActivity {
         // 连接到一个有效网络 - 1900
 
         WifiConfiguration configuration =
-                wiFiSessionManager.createWifiConfig("mac’s MacBook Pro", "", WiFiSessionManager.Data.WIFI_CIPHER_NOPASS);
+                wiFiSessionManagerOld.createWifiConfig("mac’s MacBook Pro", "", WiFiSessionManager_old.Data.WIFI_CIPHER_NOPASS);
 
 //    WifiConfiguration configuration = createWifiConfig("360免费1",null,Data.WIFI_CIPHER_NOPASS);
 
         // 添加到Wifi网络
-       // networkid = wiFiSessionManager.addWiFiNetwork(configuration);
+       // networkid = wiFiSessionManagerOld.addWiFiNetwork(configuration);
     }
 
 }

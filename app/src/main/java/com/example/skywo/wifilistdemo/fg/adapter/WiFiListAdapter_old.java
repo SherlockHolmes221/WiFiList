@@ -2,7 +2,6 @@ package com.example.skywo.wifilistdemo.fg.adapter;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
-import com.example.skywo.wifilistdemo.fg.manager.WiFiSessionManager;
+import com.example.skywo.wifilistdemo.fg.manager.WiFiSessionManager_old;
 
 import java.util.List;
 
@@ -19,13 +18,13 @@ public class WiFiListAdapter_old extends BaseAdapter {
     private Context mContext;
     private LayoutInflater inflater;
     private List<ScanResult> datas;
-    private WiFiSessionManager wiFiSessionManager;
+    private WiFiSessionManager_old wiFiSessionManagerOld;
 
     public WiFiListAdapter_old(Context context, List<ScanResult> datas) {
         this.mContext = context;
         inflater = LayoutInflater.from(mContext);
         this.datas = datas;
-        wiFiSessionManager = WiFiSessionManager.getInstance(context);
+        wiFiSessionManagerOld = WiFiSessionManager_old.getInstance(context);
     }
 
     @Override
@@ -62,15 +61,15 @@ public class WiFiListAdapter_old extends BaseAdapter {
                 ScanResult item = getItem(position);
 
                 if (item.capabilities.contains("WPA2") || item.capabilities.contains("WPA-PSK")) {
-                    wiFiSessionManager.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager.Data.WIFI_CIPHER_WPA2);
+                    wiFiSessionManagerOld.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager_old.Data.WIFI_CIPHER_WPA2);
                 } else if (item.capabilities.contains("WPA")) {
-                    wiFiSessionManager.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager.Data.WIFI_CIPHER_WPA);
+                    wiFiSessionManagerOld.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager_old.Data.WIFI_CIPHER_WPA);
                 } else if (item.capabilities.contains("WEP")) {
                     /* WIFICIPHER_WEP 加密 */
-                    wiFiSessionManager.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager.Data.WIFI_CIPHER_WEP);
+                    wiFiSessionManagerOld.addWiFiNetwork(item.SSID, "Rair", WiFiSessionManager_old.Data.WIFI_CIPHER_WEP);
                 } else {
                     /* WIFICIPHER_OPEN NOPASSWORD 开放无加密 */
-                    wiFiSessionManager.addWiFiNetwork(item.SSID, "", WiFiSessionManager.Data.WIFI_CIPHER_NOPASS);
+                    wiFiSessionManagerOld.addWiFiNetwork(item.SSID, "", WiFiSessionManager_old.Data.WIFI_CIPHER_NOPASS);
                 }
 
             }

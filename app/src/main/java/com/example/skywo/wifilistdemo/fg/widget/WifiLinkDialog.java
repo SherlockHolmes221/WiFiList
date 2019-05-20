@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
-import com.example.skywo.wifilistdemo.fg.utils.WifiSupport;
+import com.example.skywo.wifilistdemo.fg.manager.WiFiSessionManager;
 
 public class WifiLinkDialog extends Dialog implements View.OnClickListener{
 
@@ -100,12 +100,12 @@ public class WifiLinkDialog extends Dialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cofirm_button:{
-                WifiConfiguration tempConfig  = WifiSupport.isExsits(text_nameString,getContext());
+                WifiConfiguration tempConfig  = WiFiSessionManager.isExsits(text_nameString,getContext());
                 if(tempConfig == null){
-                    WifiConfiguration wifiConfiguration =  WifiSupport.createWifiConfig(text_nameString,password_edit.getText().toString(),WifiSupport.getWifiCipher(capabilities));
-                    WifiSupport.addNetWork(wifiConfiguration,getContext());
+                    WifiConfiguration wifiConfiguration =  WiFiSessionManager.createWifiConfig(text_nameString,password_edit.getText().toString(),WiFiSessionManager.getWifiCipher(capabilities));
+                    WiFiSessionManager.addNetWork(wifiConfiguration,getContext());
                 }else{
-                    WifiSupport.addNetWork(tempConfig,getContext());
+                    WiFiSessionManager.addNetWork(tempConfig,getContext());
                 }
                 dismiss();
                 break;
