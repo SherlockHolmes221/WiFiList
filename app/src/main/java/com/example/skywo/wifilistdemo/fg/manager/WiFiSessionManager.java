@@ -150,6 +150,18 @@ public class WiFiSessionManager {
         return null;
     }
 
+    /**
+     * 注意:
+     * Android 的 WiFi 连接, 大概可以分为如下两种情况:
+     * a. 无密码的, 可直接连接, 连接过程中, 此热点一直有, 不管最后是否需要其他方式进行验证操作, 但凡连接成功, 即
+     * 刻进行了对此热点的配置进行保存;
+     * b. 有密码的, 暂且不论何种加密手段, 只要用户输入密码, 点击连接, 如果连接途中, 此热点一直有, 不论连接成功还
+     * 是失败, 都即刻对此热点的配置进行了保存操作;  使用上述的方式获取到的WiFi的配置, 就是上面进行操作保存的WiFi配
+     * 置;
+     * c. 连接多个WiFi成功之后, 然后关闭WiFi, 下次开启WiFi的时候, 驱动会主动帮你连接这其中配置好的其中一个WiFi;
+     * @param context
+     */
+
     // 打开WIFI
     public static void openWifi(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -232,26 +244,23 @@ public class WiFiSessionManager {
      * @param oldSr 需要去除同名的列表
      * @return 返回不包含同命的列表
      */
-    public static List<ScanResult> noSameName(List<ScanResult> oldSr)
-    {
+    public static List<ScanResult> noSameName(List<ScanResult> oldSr) {
         List<ScanResult> newSr = new ArrayList<ScanResult>();
-        for (ScanResult result : oldSr)
-        {
+        for (ScanResult result : oldSr) {
             if (!TextUtils.isEmpty(result.SSID) && !containName(newSr, result.SSID))
                 newSr.add(result);
         }
         return newSr;
     }
+
     /**
      * 判断一个扫描结果中，是否包含了某个名称的WIFI
      * @param sr 扫描结果
      * @param name 要查询的名称
      * @return 返回true表示包含了该名称的WIFI，返回false表示不包含
      */
-    public static boolean containName(List<ScanResult> sr, String name)
-    {
-        for (ScanResult result : sr)
-        {
+    public static boolean containName(List<ScanResult> sr, String name) {
+        for (ScanResult result : sr) {
             if (!TextUtils.isEmpty(result.SSID) && result.SSID.equals(name))
                 return true;
         }
@@ -272,4 +281,30 @@ public class WiFiSessionManager {
             return 4;
         }
     }
+
+    // 开始扫描 WIFI.
+    public static void startScanWifi(WifiManager manager) {
+        if (manager != null) {
+            manager.startScan();
+        }
+    }
+
+    // 获取 WIFI 的状态.
+    public static int getWifiState(WifiManager manager) {
+        return manager == null ? WifiManager.WIFI_STATE_UNKNOWN : manager.getWifiState();
+    }
+
+/**
+ * 注意:
+ * WiFi 的状态目前有五种, 分别是:
+ * WifiManager.WIFI_STATE_ENABLING: WiFi正要开启的状态, 是 Enabled 和 Disabled 的临界状态;
+ *  WifiManager.WIFI_STATE_ENABLED: WiFi已经完全开启的状态;
+ *  WifiManager.WIFI_STATE_DISABLING: WiFi正要关闭的状态, 是 Disabled 和 Enabled 的临界状态;
+ *  WifiManager.WIFI_STATE_DISABLED: WiFi已经完全关闭的状态;
+ *  WifiManager.WIFI_STATE_UNKNOWN: WiFi未知的状态, WiFi开启, 关闭过程中出现异常, 或是厂家未配备WiFi外挂模块会出现的情况;
+ */
+
+
+
+
 }

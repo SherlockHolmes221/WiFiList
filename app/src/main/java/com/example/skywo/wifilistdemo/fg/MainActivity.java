@@ -203,10 +203,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG,"wifi连接上了");
                     hidingProgressBar();
                     WifiInfo connectedWifiInfo = WiFiSessionManager.getConnectedWifiInfo(MainActivity.this);
-
                     //连接成功 跳转界面 传递ip地址
-                    Toast.makeText(MainActivity.this,"wifi连接上了",Toast.LENGTH_SHORT).show();
-
+                    showToast("wifi连接上了");
                     connectType = 1;
                     wifiListSet(connectedWifiInfo.getSSID(),connectType);
                 }else if(NetworkInfo.State.CONNECTING == info.getState()){//正在连接
