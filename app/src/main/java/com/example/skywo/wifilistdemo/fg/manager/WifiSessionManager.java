@@ -12,8 +12,8 @@ import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WiFiSessionManager {
-    private static final String TAG = "WiFiSessionManager";
+public class WifiSessionManager {
+    private static final String TAG = "WifiSessionManager";
 
     public enum WifiCipherType {
         WIFICIPHER_WEP,
@@ -22,7 +22,7 @@ public class WiFiSessionManager {
         WIFICIPHER_INVALID
     }
 
-    public WiFiSessionManager() {
+    public WifiSessionManager() {
     }
 
     public static List<ScanResult> getWifiScanResult(Context context) {
@@ -225,7 +225,7 @@ public class WiFiSessionManager {
     }
 
     public static void getReplace(Context context, List<WifiBean> list) {
-        WifiInfo wifi = WiFiSessionManager.getConnectedWifiInfo(context);
+        WifiInfo wifi = WifiSessionManager.getConnectedWifiInfo(context);
         List<WifiBean> listCopy = new ArrayList<>();
         listCopy.addAll(list);
         for (int i = 0; i < list.size(); i++) {

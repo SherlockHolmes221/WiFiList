@@ -9,23 +9,23 @@ import android.widget.TextView;
 
 
 import com.example.skywo.wifilistdemo.R;
-import com.example.skywo.wifilistdemo.fg.MainActivity;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
-import com.example.skywo.wifilistdemo.fg.widget.WiFiSignalView;
+import com.example.skywo.wifilistdemo.fg.widget.WifiFrameLayout;
+import com.example.skywo.wifilistdemo.fg.widget.WifiSignalView;
 
 import java.util.List;
 
-public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyViewHolder> {
+public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyViewHolder> {
 
     private Context mContext;
     private List<WifiBean> resultList;
     private onItemClickListener onItemClickListener;
 
-    public void setOnItemClickListener(WiFiListAdapter.onItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(WifiListAdapter.onItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public WiFiListAdapter(Context mContext, List<WifiBean> resultList) {
+    public WifiListAdapter(Context mContext, List<WifiBean> resultList) {
         this.mContext = mContext;
         this.resultList = resultList;
     }
@@ -42,21 +42,21 @@ public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final WifiBean bean = resultList.get(position);
         holder.tvItemWifiName.setText(bean.getWifiName());
-        if(bean.isNeedPassword())
-            holder.tvItemWifiStatus.setText("(有密码)");
-        else
-            holder.tvItemWifiStatus.setText("(无密码)");
+//        if(bean.isNeedPassword())
+//            holder.tvItemWifiStatus.setText("(有密码)");
+//        else
+//            holder.tvItemWifiStatus.setText("(无密码)");
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
-        if(position == 0  && (MainActivity.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || MainActivity.WIFI_STATE_CONNECT.equals(bean.getState()))){
+        if(position == 0  && (WifiBean.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || WifiBean.WIFI_STATE_CONNECT.equals(bean.getState()))){
             holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
-            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
+           // holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
         }else{
             holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.gray_home));
-            holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
+            //holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
         }
 
-        holder.ivWiFiSignalView.setSignalLevel(bean.getLevelGrade());
+        holder.flWiFiSignalView.update(bean.getLevelGrade(),bean.isNeedPassword());
 
         holder.itemview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,15 +83,16 @@ public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyView
     static class MyViewHolder extends RecyclerView.ViewHolder{
 
         View itemview;
-        TextView tvItemWifiName, tvItemWifiStatus;
-        WiFiSignalView ivWiFiSignalView;
+        TextView tvItemWifiName;
+       // TextView tvItemWifiStatus;
+        WifiFrameLayout flWiFiSignalView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemview = itemView;
             tvItemWifiName = itemView.findViewById(R.id.tv_item_wifi_name);
-            tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
-            ivWiFiSignalView = itemView.findViewById(R.id.iv_item_wifi_signal);
+           // tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
+            flWiFiSignalView = itemView.findViewById(R.id.fl_item_icon);
         }
 
     }

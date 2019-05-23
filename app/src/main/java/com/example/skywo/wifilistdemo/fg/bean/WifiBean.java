@@ -1,6 +1,11 @@
 package com.example.skywo.wifilistdemo.fg.bean;
 
 public class WifiBean implements Comparable<WifiBean> {
+    public static final String WIFI_STATE_CONNECT = "已连接";
+    public static final String WIFI_STATE_ON_CONNECTING = "正在连接";
+    public static final String WIFI_STATE_UNCONNECT = "未连接";
+
+
     private String wifiName;
     private int level;
     private String state;  //已连接  正在连接  未连接 三种状态
@@ -67,7 +72,8 @@ public class WifiBean implements Comparable<WifiBean> {
             return -1;
         }else {
             int level1 = this.getLevel();
-            int level2 = o.getLevel();
+            int level2 =
+                    o.getLevel();
             return level1 - level2;
         }
     }

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.example.skywo.wifilistdemo.R;
 
 
-public class WiFiSignalView extends android.support.v7.widget.AppCompatImageView {
+public class WifiSignalView extends android.support.v7.widget.AppCompatImageView {
 
     private static final String TAG = "WiFiSignalView";
 
@@ -36,12 +36,12 @@ public class WiFiSignalView extends android.support.v7.widget.AppCompatImageView
     private Paint mColorPaint;
     private Animation mAnimation;
 
-    public WiFiSignalView(@NonNull Context context){
+    public WifiSignalView(@NonNull Context context){
         super(context);
         initView();
     }
 
-    public WiFiSignalView(@NonNull Context context, AttributeSet attributes) {
+    public WifiSignalView(@NonNull Context context, AttributeSet attributes) {
         super(context, attributes);
         initView();
     }
