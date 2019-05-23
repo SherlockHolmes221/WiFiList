@@ -282,6 +282,10 @@ public class WiFiSessionManager {
         }
     }
 
+    public static int getLevelByGrade(int level) {
+        return level != 0 ? level / 25 : 0;
+    }
+
     // 开始扫描 WIFI.
     public static void startScanWifi(WifiManager manager) {
         if (manager != null) {

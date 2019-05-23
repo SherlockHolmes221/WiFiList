@@ -2,10 +2,11 @@ package com.example.skywo.wifilistdemo.fg.bean;
 
 public class WifiBean implements Comparable<WifiBean> {
     private String wifiName;
-    private String level;
+    private int level;
     private String state;  //已连接  正在连接  未连接 三种状态
     private String capabilities;//加密方式
     private boolean isNeedPassword;
+    private int levelGrade;
 
 
     public String getCapabilities() {
@@ -24,11 +25,11 @@ public class WifiBean implements Comparable<WifiBean> {
         this.wifiName = wifiName;
     }
 
-    public String getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(String level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
@@ -48,6 +49,14 @@ public class WifiBean implements Comparable<WifiBean> {
         isNeedPassword = needPassword;
     }
 
+    public int getLevelGrade() {
+        return levelGrade;
+    }
+
+    public void setLevelGrade(int levelGrade) {
+        this.levelGrade = levelGrade;
+    }
+
     @Override
     public int compareTo(WifiBean o) {
         boolean b1 = this.isNeedPassword;
@@ -57,8 +66,8 @@ public class WifiBean implements Comparable<WifiBean> {
         }else if(!b1 && b2){
             return -1;
         }else {
-            int level1 = Integer.parseInt(this.getLevel());
-            int level2 = Integer.parseInt(o.getLevel());
+            int level1 = this.getLevel();
+            int level2 = o.getLevel();
             return level1 - level2;
         }
     }
@@ -71,6 +80,7 @@ public class WifiBean implements Comparable<WifiBean> {
                 ", state='" + state + '\'' +
                 ", capabilities='" + capabilities + '\'' +
                 ", isNeedPassword=" + isNeedPassword +
+                ", levelGrade=" + levelGrade +
                 '}';
     }
 }

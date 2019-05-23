@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.MainActivity;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
+import com.example.skywo.wifilistdemo.fg.widget.WiFiSignalView;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyView
             holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
         }
 
+        holder.ivWiFiSignalView.setSignalLevel(bean.getLevelGrade());
+
         holder.itemview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,12 +84,14 @@ public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyView
 
         View itemview;
         TextView tvItemWifiName, tvItemWifiStatus;
+        WiFiSignalView ivWiFiSignalView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemview = itemView;
-            tvItemWifiName = (TextView) itemView.findViewById(R.id.tv_item_wifi_name);
-            tvItemWifiStatus = (TextView) itemView.findViewById(R.id.tv_item_wifi_status);
+            tvItemWifiName = itemView.findViewById(R.id.tv_item_wifi_name);
+            tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
+            ivWiFiSignalView = itemView.findViewById(R.id.iv_item_wifi_signal);
         }
 
     }
