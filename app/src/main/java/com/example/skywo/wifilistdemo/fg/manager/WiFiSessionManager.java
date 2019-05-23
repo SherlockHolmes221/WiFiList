@@ -303,8 +303,4 @@ public class WiFiSessionManager {
  *  WifiManager.WIFI_STATE_DISABLED: WiFi已经完全关闭的状态;
  *  WifiManager.WIFI_STATE_UNKNOWN: WiFi未知的状态, WiFi开启, 关闭过程中出现异常, 或是厂家未配备WiFi外挂模块会出现的情况;
  */
-
-
-
-
 }

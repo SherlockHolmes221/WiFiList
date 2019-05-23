@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.example.skywo.wifilistdemo.fg.widget.WiFiSignalView
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_centerVertical="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
 
     <TextView
+        android:text="bababba"
         android:layout_centerVertical="true"
         android:id="@+id/tv_item_wifi_name"
         android:layout_marginLeft="12dp"
@@ -17,21 +26,10 @@
 
     <TextView
         android:id="@+id/tv_item_wifi_status"
-        android:textSize="12sp"
+        android:textSize="20sp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/tv_item_wifi_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 
-    <ImageView
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/wifi"
-        android:layout_marginRight="12dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="22dp"
-        android:layout_height="22dp" />
-
-</RelativeLayout>
+</LinearLayout>

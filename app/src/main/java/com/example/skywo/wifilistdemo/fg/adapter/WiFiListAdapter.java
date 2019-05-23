@@ -41,7 +41,10 @@ public class WiFiListAdapter extends RecyclerView.Adapter<WiFiListAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final WifiBean bean = resultList.get(position);
         holder.tvItemWifiName.setText(bean.getWifiName());
-        holder.tvItemWifiStatus.setText("("+bean.getState()+")");
+        if(bean.isNeedPassword())
+            holder.tvItemWifiStatus.setText("(有密码)");
+        else
+            holder.tvItemWifiStatus.setText("(无密码)");
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
         if(position == 0  && (MainActivity.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || MainActivity.WIFI_STATE_CONNECT.equals(bean.getState()))){

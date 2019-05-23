@@ -5,16 +5,8 @@ public class WifiBean implements Comparable<WifiBean> {
     private String level;
     private String state;  //已连接  正在连接  未连接 三种状态
     private String capabilities;//加密方式
+    private boolean isNeedPassword;
 
-    @Override
-    public String toString() {
-        return "WifiBean{" +
-                "wifiName='" + wifiName + '\'' +
-                ", level='" + level + '\'' +
-                ", state='" + state + '\'' +
-                ", capabilities='" + capabilities + '\'' +
-                '}';
-    }
 
     public String getCapabilities() {
         return capabilities;
@@ -48,10 +40,37 @@ public class WifiBean implements Comparable<WifiBean> {
         this.state = state;
     }
 
+    public boolean isNeedPassword() {
+        return isNeedPassword;
+    }
+
+    public void setNeedPassword(boolean needPassword) {
+        isNeedPassword = needPassword;
+    }
+
     @Override
     public int compareTo(WifiBean o) {
-        int level1 = Integer.parseInt(this.getLevel());
-        int level2 = Integer.parseInt(o.getLevel());
-        return level1 - level2;
+        boolean b1 = this.isNeedPassword;
+        boolean b2 = o.isNeedPassword;
+        if(b1 && !b2){
+            return 1;
+        }else if(!b1 && b2){
+            return -1;
+        }else {
+            int level1 = Integer.parseInt(this.getLevel());
+            int level2 = Integer.parseInt(o.getLevel());
+            return level1 - level2;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "WifiBean{" +
+                "wifiName='" + wifiName + '\'' +
+                ", level='" + level + '\'' +
+                ", state='" + state + '\'' +
+                ", capabilities='" + capabilities + '\'' +
+                ", isNeedPassword=" + isNeedPassword +
+                '}';
     }
 }

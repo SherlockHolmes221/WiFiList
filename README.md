@@ -55,9 +55,8 @@ WifiInfo mWifiInfo = wifimanager.getConnectionInfo();
 //mWifiInfo:
 //SSID: Skyworth, BSSID: d8:15:0d:6c:20:48, Supplicant state: COMPLETED, RSSI: -54, Link speed: 72Mbps, Frequency: 2462MHz, Net ID: 27, Metered hint: false, score: 100
 ```
-```
 
-```aidl
+```
 //获取已经保存过的/配置好的 WIFI 热点
 List<WifiConfiguration> existingConfigs = wifimanager.getConfiguredNetworks();
 ```

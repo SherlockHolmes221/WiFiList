@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar pbWifiLoading;
 
     List<WifiBean> realWifiList = new ArrayList<>();
+
     private WiFiListAdapter adapter;
     private RecyclerView recyWifiList;
 
@@ -296,14 +297,24 @@ public class MainActivity extends AppCompatActivity {
      * 获取wifi列表然后将bean转成自己定义的WifiBean
      */
     public void sortScaResult(){
+
+        //获取扫描到的wifi的list
         List<ScanResult> scanResults = WiFiSessionManager.noSameName(WiFiSessionManager.getWifiScanResult(this));
+
         realWifiList.clear();
         if(!isNullOrEmpty(scanResults)){
             for(int i = 0;i < scanResults.size();i++){
                 WifiBean wifiBean = new WifiBean();
                 wifiBean.setWifiName(scanResults.get(i).SSID);
                 wifiBean.setState(WIFI_STATE_UNCONNECT);   //只要获取都假设设置成未连接，真正的状态都通过广播来确定
-                wifiBean.setCapabilities(scanResults.get(i).capabilities);
+                String capabilities = scanResults.get(i).capabilities;
+                wifiBean.setCapabilities(capabilities);
+
+                if(WiFiSessionManager.getWifiCipher(capabilities) == WiFiSessionManager.WifiCipherType.WIFICIPHER_NOPASS){
+                    wifiBean.setNeedPassword(true);
+                }else
+                    wifiBean.setNeedPassword(false);
+
                 wifiBean.setLevel(WiFiSessionManager.getLevel(scanResults.get(i).level)+"");
                 realWifiList.add(wifiBean);
             }//for
