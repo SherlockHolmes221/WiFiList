@@ -1,4 +1,4 @@
-package com.example.skywo.wifilistdemo.fg;
+package com.example.skywo.wifilistdemo.fg.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -11,7 +11,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.nfc.TagLostException;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -29,11 +28,8 @@ import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.adapter.WifiListAdapter;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import com.example.skywo.wifilistdemo.fg.manager.WifiSessionManager;
-import com.example.skywo.wifilistdemo.fg.widget.WiFiListView;
-import com.example.skywo.wifilistdemo.fg.widget.WifiLinkDialog;
-import com.example.skywo.wifilistdemo.fg.widget.WifiSignalView;
-
-import org.w3c.dom.Text;
+import com.example.skywo.wifilistdemo.fg.view.WifiLinkDialog;
+import com.example.skywo.wifilistdemo.fg.view.WifiSignalView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.layout_wifi_list);
         //检查权限
         mHasPermission = checkPermission();
 

@@ -1,17 +1,13 @@
-package com.example.skywo.wifilistdemo.fg;
+package com.example.skywo.wifilistdemo.fg.activity;
 
-import android.app.AppComponentFactory;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
-import com.example.skywo.wifilistdemo.fg.manager.WifiSessionManager;
 
 public class WifiDetailActivity extends AppCompatActivity {
     private static final String SSID = "ssid";
@@ -32,7 +28,7 @@ public class WifiDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.layout_detail_view);
+        setContentView(R.layout.layout_wifi_detail);
         Intent intent = getIntent();
         ssid = intent.getStringExtra(SSID) == null ? "":intent.getStringExtra(SSID) ;
         level = intent.getIntExtra(LEVEL,0);

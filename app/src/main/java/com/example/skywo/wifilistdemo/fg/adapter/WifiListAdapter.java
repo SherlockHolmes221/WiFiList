@@ -2,7 +2,6 @@ package com.example.skywo.wifilistdemo.fg.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,7 @@ import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
-import com.example.skywo.wifilistdemo.fg.widget.WifiFrameLayout;
-import com.example.skywo.wifilistdemo.fg.widget.WifiSignalView;
+import com.example.skywo.wifilistdemo.fg.view.WifiFrameLayout;
 
 import java.util.List;
 

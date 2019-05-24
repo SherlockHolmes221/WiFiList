@@ -33,6 +33,7 @@
     </RelativeLayout>
 
 
+
     <LinearLayout
         android:background="@color/white"
         android:orientation="vertical"
@@ -40,12 +41,15 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:padding="10dp"
             android:textSize="14dp"
             android:id="@+id/tv_connect_info"
             android:layout_marginLeft="12dp"
-            android:text="已连接"
+            android:text="@string/wifi_disconnected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+
         <LinearLayout
             android:id="@+id/ly_head_info"
             android:gravity="center_vertical"
@@ -54,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp">
 
-            <com.example.skywo.wifilistdemo.fg.widget.WifiSignalView
+            <com.example.skywo.wifilistdemo.fg.view.WifiSignalView
                 android:id="@+id/fl_head_item_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -64,7 +68,7 @@
             <TextView
                 android:maxWidth="250dp"
                 android:maxLines="1"
-                android:text="bababba"
+                android:text=""
                 android:layout_centerVertical="true"
                 android:id="@+id/tv_item_wifi_name"
                 android:layout_marginLeft="12dp"
@@ -85,10 +89,20 @@
                     android:layout_height="28dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/shape_blue_round_bg"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="@string/wifi_list_item_disconnect"
                     android:textColor="@drawable/selector_connect_view_text_color"
                     android:textSize="14dp" />
+
+                <ImageView
+                    android:id="@+id/iv_head_more"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/more"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -98,6 +112,12 @@
         <!--android:id="@+id/list_view_show_items"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"/>-->
+
+
+    <LinearLayout
+        android:background="#1296db"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
 
 
     <android.support.v7.widget.RecyclerView

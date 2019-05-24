@@ -1,4 +1,4 @@
-package com.example.skywo.wifilistdemo.fg.widget;
+package com.example.skywo.wifilistdemo.fg.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -47,7 +47,7 @@ public class WifiLinkDialog extends Dialog implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.setting_wifi_link_dialog, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_wifi_password, null);
         setContentView(view);
         initView(view);
         text_name.setText(text_nameString);

@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fg.MainActivity">
+        <activity android:name=".fg.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".fg.WifiDetailActivity"/>
+        <activity android:name=".fg.activity.WifiDetailActivity"/>
     </application>
 
 </manifest>
