@@ -116,7 +116,7 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
     }
 
     public interface onItemClickListener{
-        void onItemClick(View view, int postion, Object o);
+        void onItemClick(View view, int position, Object o);
         void onConnect(View view,int position,Object o);
     }
 

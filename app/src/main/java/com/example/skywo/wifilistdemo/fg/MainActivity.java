@@ -114,13 +114,6 @@ public class MainActivity extends AppCompatActivity {
         tvConnectInfo.setText("当前无连接WiFi");
         headInfoLinearLayout.setVisibility(View.GONE);
 
-        //头部WiFi点击事件
-        headWifiSignalView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         //断开连接的点击事件
         headDisconnectTv.setOnClickListener(new View.OnClickListener() {
@@ -167,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion, Object o) {
-                showDetailPage();
+            public void onItemClick(View view, int position, Object o) {
+                startActivity(WifiDetailActivity.jumpToDetailPage(MainActivity.this,realWifiList.get(position).getWifiName(),
+                        realWifiList.get(position).getLevelGrade(),realWifiList.get(position).getCapabilities()));
             }
 
             /**
@@ -204,11 +198,6 @@ public class MainActivity extends AppCompatActivity {
 
         //获取和进行排序
         getAndSortScaResult();
-    }
-
-    //详情页面
-    private void showDetailPage() {
-
     }
 
     /**
