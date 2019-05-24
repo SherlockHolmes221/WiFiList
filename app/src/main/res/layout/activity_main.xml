@@ -32,6 +32,13 @@
 
     </RelativeLayout>
 
+
+    <!--<com.example.skywo.wifilistdemo.fg.widget.WiFiListView-->
+        <!--android:id="@+id/list_view_show_items"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recy_list_wifi"
         android:layout_width="match_parent"

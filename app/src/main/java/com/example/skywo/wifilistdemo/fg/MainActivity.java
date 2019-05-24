@@ -26,6 +26,7 @@ import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.adapter.WifiListAdapter;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import com.example.skywo.wifilistdemo.fg.manager.WifiSessionManager;
+import com.example.skywo.wifilistdemo.fg.widget.WiFiListView;
 import com.example.skywo.wifilistdemo.fg.widget.WifiLinkDialog;
 
 import java.util.ArrayList;
@@ -53,9 +54,15 @@ public class MainActivity extends AppCompatActivity {
     private WifiListAdapter adapter;
     private RecyclerView recyWifiList;
 
+    //private WiFiListView wiFiListView;
+
     private WifiBroadcastReceiver wifiReceiver;
 
     private int connectType = 0;//1：连接成功？ 2 正在连接（如果wifi热点列表发生变需要该字段）
+
+    private LinearLayoutManager mLinearLayoutManager;
+    private int visibleItemCount,pastVisiblesItems,totalItemCount;
+    private boolean isEnd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +88,63 @@ public class MainActivity extends AppCompatActivity {
         pbWifiLoading = findViewById(R.id.pb_wifi_loading);
         hidingProgressBar();
 
-        recyWifiList = findViewById(R.id.recy_list_wifi);
         adapter = new WifiListAdapter(this, realWifiList);
-        recyWifiList.setLayoutManager(new LinearLayoutManager(this));
+
+//        wiFiListView = findViewById(R.id.list_view_show_items);
+//
+//        wiFiListView.setAdapter(adapter);
+
+        recyWifiList = findViewById(R.id.recy_list_wifi);
+
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        recyWifiList.setLayoutManager(mLinearLayoutManager);
         recyWifiList.setAdapter(adapter);
 
+//        //滑动的点击事件
+//        recyWifiList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                switch(newState) {
+//                    case 0:
+//                        Log.i(TAG, "recyclerview已经停止滚动");
+//                        //开始更新
+//                        break;
+//                    case 1:
+//                        Log.i(TAG, "recyclerview正在被拖拽");
+//                        break;
+//                    case 2:
+//                        Log.i(TAG, "recyclerview正在依靠惯性滚动");
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//            }
+//        });
+
+        recyWifiList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                visibleItemCount = mLinearLayoutManager.getChildCount();
+                totalItemCount = mLinearLayoutManager.getItemCount();
+                pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+
+                if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                    isEnd = true;
+                    Log.i(TAG, "Last Item Wow !");
+                    showToast("正在刷新WiFi");
+                    //进行刷新wifi的操作
+                    getAndSortScaResult();
+                }else
+                    isEnd = false;
+            }
+        });
+
+         //获取和进行排序
         getAndSortScaResult();
 
         /**
@@ -101,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 if (wifiBean.getState().equals(WifiBean.WIFI_STATE_UNCONNECT)) {
                     String capabilities = realWifiList.get(postion).getCapabilities();
 
-                    if (WifiSessionManager.getWifiCipher(capabilities) == WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS) {//无需密码
+                    if (!realWifiList.get(postion).isNeedPassword()) {//无需密码
 
                         //查看以前是否也配置过这个网络
                         WifiConfiguration tempConfig = WifiSessionManager.isExsits(wifiBean.getWifiName(), MainActivity.this);
@@ -252,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
             if (index == -1 && ("\"" + wifiBean.getWifiName() + "\"").equals(wifiName)) {
                 index = i;
                 int level = wifiBean.getLevel();
+//                Log.e(TAG, String.valueOf(level));
                 wifiInfo.setLevel(level);
                 wifiInfo.setWifiName(wifiBean.getWifiName());
                 //wifiInfo.setLevelGrade(3);
@@ -315,12 +375,13 @@ public class MainActivity extends AppCompatActivity {
                 wifiBean.setCapabilities(capabilities);
 
                 if (WifiSessionManager.getWifiCipher(capabilities) == WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS) {
-                    wifiBean.setNeedPassword(true);
-                } else
                     wifiBean.setNeedPassword(false);
+                } else
+                    wifiBean.setNeedPassword(true);
 
-                int level =  scanResults.get(i).level;
+                int level =scanResults.get(i).level;
                 wifiBean.setLevel(level);
+                Log.e(TAG, "getAndSortScaResult: "+level );
 
                 //level等级
                 wifiBean.setLevelGrade(WifiSessionManager.getLevelByGrade(level));

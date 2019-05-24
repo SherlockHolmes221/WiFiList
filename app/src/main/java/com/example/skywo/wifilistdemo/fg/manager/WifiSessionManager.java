@@ -283,8 +283,16 @@ public class WifiSessionManager {
     }
 
     public static int getLevelByGrade(int level) {
-        return level != 0 ? level / 25 : 0;
+        if(level < -85)
+            return 1;
+        else if(level < -70)
+            return 2;
+        else if(level < -55)
+            return 3;
+
+        else return 4;
     }
+
 
     // 开始扫描 WIFI.
     public static void startScanWifi(WifiManager manager) {
