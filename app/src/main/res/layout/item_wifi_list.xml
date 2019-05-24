@@ -47,6 +47,15 @@
             android:text="@string/wifi_list_item_connect"
             android:textColor="@drawable/selector_connect_view_text_color"
             android:textSize="14dp" />
+
+        <ImageView
+            android:id="@+id/iv_item_more"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/more"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
     </LinearLayout>
 
 

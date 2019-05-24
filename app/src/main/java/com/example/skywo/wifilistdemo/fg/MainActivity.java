@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View view, int position, Object o) {
+            public void onItemClick(int position) {
                 startActivity(WifiDetailActivity.jumpToDetailPage(MainActivity.this,realWifiList.get(position).getWifiName(),
                         realWifiList.get(position).getLevelGrade(),realWifiList.get(position).getCapabilities()));
             }

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -64,7 +65,7 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
         holder.itemview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onItemClick(view,position,bean);
+                onItemClickListener.onConnect(view,position,bean);
             }
         });
 
@@ -79,6 +80,13 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
                 }
             });
         }
+
+        holder.ivMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
 
     }
 
@@ -102,6 +110,7 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
         TextView tvItemWifiName;
        // TextView tvItemWifiStatus;
         WifiFrameLayout flWiFiSignalView;
+        ImageView ivMore;
 
         TextView tvConnect;
 
@@ -112,11 +121,12 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
            // tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
             flWiFiSignalView = itemView.findViewById(R.id.fl_item_icon);
             tvConnect = itemView.findViewById(R.id.tv_item_wifi_disconnect);
+            ivMore = itemView.findViewById(R.id.iv_item_more);
         }
     }
 
     public interface onItemClickListener{
-        void onItemClick(View view, int position, Object o);
+        void onItemClick(int position);
         void onConnect(View view,int position,Object o);
     }
 
