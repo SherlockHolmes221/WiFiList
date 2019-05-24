@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout headInfoLinearLayout;
     private WifiSignalView headWifiSignalView;
     private TextView headConnectedWiFiName;
+    private TextView headDisconnectTv;
 //    private TextView headConnectedWiFiState;
 
     private WifiBean connectedWifiItem;
@@ -101,12 +102,13 @@ public class MainActivity extends AppCompatActivity {
     private void initUIAndEvent() {
         pbWifiLoading = findViewById(R.id.pb_wifi_loading);
 
-
         //头部状态信息
         tvConnectInfo = findViewById(R.id.tv_connect_info);
         headInfoLinearLayout = findViewById(R.id.ly_head_info);
         headWifiSignalView = findViewById(R.id.fl_head_item_icon);
         headConnectedWiFiName = findViewById(R.id.tv_item_wifi_name);
+        headDisconnectTv = findViewById(R.id.tv_item_wifi_disconnect);
+
        // headConnectedWiFiState = findViewById(R.id.tv_head_item_wifi_status);
 
         tvConnectInfo.setText("当前无连接WiFi");
@@ -117,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        //断开连接的点击事件
+        headDisconnectTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WifiSessionManager.disconnect(MainActivity.this);
+                Log.e(TAG, "onClick: disconnect" );
             }
         });
 
@@ -392,6 +403,9 @@ public class MainActivity extends AppCompatActivity {
             headWifiSignalView.stopSignalAnimation();
             //更新ssid信息
             headConnectedWiFiName.setText(connectedWifiItem.getWifiName());
+
+            headDisconnectTv.setVisibility(View.VISIBLE);
+
         }else if(connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECTING)){
             tvConnectInfo.setText(R.string.wifi_connecting);
             headInfoLinearLayout.setVisibility(View.VISIBLE);
@@ -401,6 +415,9 @@ public class MainActivity extends AppCompatActivity {
             headWifiSignalView.startSignalAnimation();
             //更新ssid信息
             headConnectedWiFiName.setText(connectedWifiItem.getWifiName());
+
+            //隐藏按钮
+            headDisconnectTv.setVisibility(View.GONE);
         }else {
             tvConnectInfo.setText(R.string.wifi_disconnected);
             headInfoLinearLayout.setVisibility(View.GONE);

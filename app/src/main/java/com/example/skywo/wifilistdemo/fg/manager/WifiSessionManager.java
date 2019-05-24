@@ -306,6 +306,12 @@ public class WifiSessionManager {
         return manager == null ? WifiManager.WIFI_STATE_UNKNOWN : manager.getWifiState();
     }
 
+    //断开连接
+    public static void disconnect(Context context){
+        WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        wifimanager.disconnect();
+    }
+
 /**
  * 注意:
  * WiFi 的状态目前有五种, 分别是:
