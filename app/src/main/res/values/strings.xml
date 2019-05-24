@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WiFiListDemo</string>
+
+    <string name = "wifi_connected">WiFi已连接</string>
+    <string name = "wifi_connecting">正在连接当前WiFi</string>
+    <string name = "wifi_disconnected">没有连接WiFi</string>
 </resources>

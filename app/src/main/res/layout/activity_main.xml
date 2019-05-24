@@ -6,17 +6,17 @@
     >
 
     <RelativeLayout
-        android:background="@color/gray1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:textSize="14dp"
             android:textColor="@color/gray_home"
             android:layout_marginTop="9dp"
             android:layout_marginBottom="9dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="20dp"
             android:text="WiFi列表"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -33,6 +33,55 @@
     </RelativeLayout>
 
 
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="14dp"
+            android:id="@+id/tv_connect_info"
+            android:layout_marginLeft="12dp"
+            android:text="已连接"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/ly_head_info"
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <com.example.skywo.wifilistdemo.fg.widget.WifiSignalView
+                android:id="@+id/fl_head_item_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="25dp" />
+
+
+            <TextView
+                android:text="bababba"
+                android:layout_centerVertical="true"
+                android:id="@+id/tv_item_wifi_name"
+                android:layout_marginLeft="12dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!--<TextView-->
+                <!--android:text="已连接"-->
+                <!--android:layout_marginLeft="12dp"-->
+                <!--android:id="@+id/tv_head_item_wifi_status"-->
+                <!--android:textSize="14sp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
+
+        </LinearLayout>
+
+    </LinearLayout>
     <!--<com.example.skywo.wifilistdemo.fg.widget.WiFiListView-->
         <!--android:id="@+id/list_view_show_items"-->
         <!--android:layout_width="match_parent"-->

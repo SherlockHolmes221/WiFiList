@@ -48,7 +48,7 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
 //            holder.tvItemWifiStatus.setText("(无密码)");
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
-        if(position == 0  && (WifiBean.WIFI_STATE_ON_CONNECTING.equals(bean.getState()) || WifiBean.WIFI_STATE_CONNECT.equals(bean.getState()))){
+        if(position == 0  && (WifiBean.WIFI_STATE_CONNECTING.equals(bean.getState()) || WifiBean.WIFI_STATE_CONNECT.equals(bean.getState()))){
             holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
            // holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
         }else{

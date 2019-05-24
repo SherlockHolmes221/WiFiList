@@ -2,8 +2,8 @@ package com.example.skywo.wifilistdemo.fg.bean;
 
 public class WifiBean implements Comparable<WifiBean> {
     public static final String WIFI_STATE_CONNECT = "已连接";
-    public static final String WIFI_STATE_ON_CONNECTING = "正在连接";
-    public static final String WIFI_STATE_UNCONNECT = "未连接";
+    public static final String WIFI_STATE_CONNECTING = "正在连接";
+    public static final String WIFI_STATE_DISCONNECT = "未连接";
 
 
     private String wifiName;
