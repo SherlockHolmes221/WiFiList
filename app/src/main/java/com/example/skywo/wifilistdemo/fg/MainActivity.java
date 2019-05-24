@@ -164,20 +164,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * 点击item
-         * 若点击的wifi未连接，需要密码则弹框
-         * 不需要密码，检查是否之前配置过该网络，连接
-         */
+
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(View view, int postion, Object o) {
-                WifiBean wifiBean = realWifiList.get(postion);
+                showDetailPage();
+            }
+
+            /**
+             * 点击连接
+             * 若点击的wifi未连接，需要密码则弹框
+             * 不需要密码，检查是否之前配置过该网络，连接
+             */
+            @Override
+            public void onConnect(View view, int position, Object o) {
+                WifiBean wifiBean = realWifiList.get(position);
                 //
                 if (wifiBean.getState().equals(WifiBean.WIFI_STATE_DISCONNECT)) {
-                    String capabilities = realWifiList.get(postion).getCapabilities();
+                    String capabilities = realWifiList.get(position).getCapabilities();
 
-                    if (!realWifiList.get(postion).isNeedPassword()) {//无需密码
+                    if (!realWifiList.get(position).isNeedPassword()) {//无需密码
 
                         //查看以前是否也配置过这个网络
                         WifiConfiguration tempConfig = WifiSessionManager.isExsits(wifiBean.getWifiName(), MainActivity.this);
@@ -188,15 +194,21 @@ public class MainActivity extends AppCompatActivity {
                             WifiSessionManager.addNetWork(tempConfig, MainActivity.this);
                         }
                     } else {   //需要密码，弹出输入密码dialog
-                        noConfigurationWifi(postion);
+                        noConfigurationWifi(position);
                     }
                 } else if (wifiBean.getState().equals(WifiBean.WIFI_STATE_CONNECT)) {
                     showToast("已连接");
                 }
             }
         });
+
         //获取和进行排序
         getAndSortScaResult();
+    }
+
+    //详情页面
+    private void showDetailPage() {
+
     }
 
     /**
@@ -414,7 +426,8 @@ public class MainActivity extends AppCompatActivity {
                 //停止动画
                 headWifiSignalView.stopSignalAnimation();
                 //更新ssid信息
-                headConnectedWiFiName.setText(connectedWifiItem.getWifiName());
+                headConnectedWiFiName.setText(connectedWifiItem.getWifiName().length() <=20 ?
+                        connectedWifiItem.getWifiName() : connectedWifiItem.getWifiName().substring(0,20)+"...");
 
                 headDisconnectTv.setVisibility(View.VISIBLE);
 
@@ -428,7 +441,8 @@ public class MainActivity extends AppCompatActivity {
                 //开始动画
                 headWifiSignalView.startSignalAnimation();
                 //更新ssid信息
-                headConnectedWiFiName.setText(connectedWifiItem.getWifiName());
+                headConnectedWiFiName.setText(connectedWifiItem.getWifiName().length() <=20 ?
+                        connectedWifiItem.getWifiName() : connectedWifiItem.getWifiName().substring(20)+"...");
 
                 //隐藏按钮
                 headDisconnectTv.setVisibility(View.GONE);

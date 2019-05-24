@@ -2,6 +2,7 @@ package com.example.skywo.wifilistdemo.fg.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
     private Context mContext;
     private List<WifiBean> resultList;
     private onItemClickListener onItemClickListener;
+
+    private static final String TAG = "WifiListAdapter";
 
     public void setOnItemClickListener(WifiListAdapter.onItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -64,6 +67,19 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
                 onItemClickListener.onItemClick(view,position,bean);
             }
         });
+
+        if(bean.isNeedPassword()){
+            holder.tvConnect.setVisibility(View.GONE);
+        }else{
+            holder.tvConnect.setVisibility(View.VISIBLE);
+            holder.tvConnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onConnect(view,position,bean);
+                }
+            });
+        }
+
     }
 
     public void replaceAll(List<WifiBean> datas) {
@@ -87,17 +103,21 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
        // TextView tvItemWifiStatus;
         WifiFrameLayout flWiFiSignalView;
 
+        TextView tvConnect;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             itemview = itemView;
             tvItemWifiName = itemView.findViewById(R.id.tv_item_wifi_name);
            // tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
             flWiFiSignalView = itemView.findViewById(R.id.fl_item_icon);
+            tvConnect = itemView.findViewById(R.id.tv_item_wifi_disconnect);
         }
     }
 
     public interface onItemClickListener{
         void onItemClick(View view, int postion, Object o);
+        void onConnect(View view,int position,Object o);
     }
 
 }
