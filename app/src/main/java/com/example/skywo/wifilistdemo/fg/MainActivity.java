@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         headInfoLinearLayout = findViewById(R.id.ly_head_info);
         headWifiSignalView = findViewById(R.id.fl_head_item_icon);
         headConnectedWiFiName = findViewById(R.id.tv_item_wifi_name);
-        headDisconnectTv = findViewById(R.id.tv_item_wifi_disconnect);
+        headDisconnectTv = findViewById(R.id.tv_head_wifi_disconnect);
 
        // headConnectedWiFiState = findViewById(R.id.tv_head_item_wifi_status);
 

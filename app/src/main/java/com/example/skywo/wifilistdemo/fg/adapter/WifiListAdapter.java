@@ -41,20 +41,20 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final WifiBean bean = resultList.get(position);
-        holder.tvItemWifiName.setText(bean.getWifiName());
+        holder.tvItemWifiName.setText(bean.getWifiName().length() <= 20 ? bean.getWifiName() : bean.getWifiName().substring(20)+"...");
 //        if(bean.isNeedPassword())
 //            holder.tvItemWifiStatus.setText("(有密码)");
 //        else
 //            holder.tvItemWifiStatus.setText("(无密码)");
 
         //可以传递给adapter的数据都是经过处理的，已连接或者正在连接状态的wifi都是处于集合中的首位，所以可以写出如下判断
-        if(position == 0  && (WifiBean.WIFI_STATE_CONNECTING.equals(bean.getState()) || WifiBean.WIFI_STATE_CONNECT.equals(bean.getState()))){
-            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
-           // holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
-        }else{
-            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.gray_home));
-            //holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
-        }
+//        if(position == 0  && (WifiBean.WIFI_STATE_CONNECTING.equals(bean.getState()) || WifiBean.WIFI_STATE_CONNECT.equals(bean.getState()))){
+//            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
+//           // holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.homecolor1));
+//        }else{
+//            holder.tvItemWifiName.setTextColor(mContext.getResources().getColor(R.color.gray_home));
+//            //holder.tvItemWifiStatus.setTextColor(mContext.getResources().getColor(R.color.gray_home));
+//        }
 
         holder.flWiFiSignalView.update(bean.getLevelGrade(),bean.isNeedPassword());
 
@@ -94,7 +94,6 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.MyView
            // tvItemWifiStatus = itemView.findViewById(R.id.tv_item_wifi_status);
             flWiFiSignalView = itemView.findViewById(R.id.fl_item_icon);
         }
-
     }
 
     public interface onItemClickListener{

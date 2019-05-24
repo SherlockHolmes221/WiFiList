@@ -5,4 +5,5 @@
     <string name = "wifi_connecting">正在连接当前WiFi</string>
     <string name = "wifi_disconnected">没有连接WiFi</string>
     <string name="wifi_list_item_disconnect">断开连接</string>
+    <string name="wifi_list_item_connect">连接</string>
 </resources>
