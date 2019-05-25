@@ -5,15 +5,16 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 
+import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
 
 import java.util.List;
 
 public interface WifiPresenter {
 
-    void refreshConnectedWiFiInfo();
+    void getSortScanResult(Context context,String ssid,List<WifiBean> wifiBeanList);
 
-    List<ScanResult> getWifiScanResult(Context context);
+    void refreshConnectedWiFiInfo();
 
     boolean isOpenWifi(Context context);
 
@@ -30,4 +31,6 @@ public interface WifiPresenter {
     int getLevelByGrade(int level);
 
     WifiInfo getConnectedWifiInfo(Context context);
+
+
 }

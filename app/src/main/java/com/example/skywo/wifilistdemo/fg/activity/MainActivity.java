@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,9 +19,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.skywo.wifilistdemo.R;
+import com.example.skywo.wifilistdemo.fg.base.BaseActivity;
 import com.example.skywo.wifilistdemo.fg.adapter.WifiListAdapter;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
@@ -34,89 +31,126 @@ import com.example.skywo.wifilistdemo.fg.presenter.impl.WifiPresenterImpl;
 import com.example.skywo.wifilistdemo.fg.UILib.WifiSignalView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements WifiView{
+public class MainActivity extends BaseActivity implements WifiView{
 
     private static final String TAG = "MainActivity";
-    //权限请求码
-    private static final int PERMISSION_REQUEST_CODE = 0;
+
+    /***************权限申请******************/
     //两个危险权限需要动态申请
     private static final String[] NEEDED_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
     private boolean mHasPermission;
+    /***************权限申请******************/
 
-    //ProgressBar pbWifiLoading;
 
-    List<WifiBean> realWifiList = new ArrayList<>();
-
+    /***************wifi列表******************/
+    List<WifiBean> wifiBeanList = new ArrayList<>();
     private WifiListAdapter adapter;
     private RecyclerView recyWifiList;
-
-    //private WiFiListView wiFiListView;
-
-    private WifiBroadcastReceiver wifiReceiver;
-
-    private int connectType = 0;//1：连接成功？ 2 正在连接（如果wifi热点列表发生变需要该字段）
-
     private LinearLayoutManager mLinearLayoutManager;
     private int visibleItemCount,pastVisiblesItems,totalItemCount;
-    //private boolean isEnd = false;
+    /***************wifi列表******************/
 
+
+    /***************wifi广播******************/
+    private WifiBroadcastReceiver wifiReceiver;
+    /***************wifi广播******************/
+
+
+    /***************头部已连接wifi信息******************/
+    private WifiBean connectedWifiItem;
     private TextView tvConnectInfo;
     private LinearLayout headInfoLinearLayout;
     private WifiSignalView headWifiSignalView;
     private TextView headConnectedWiFiName;
     private TextView headDisconnectTv;
     private ImageView headMoreIv;
-//    private TextView headConnectedWiFiState;
+    private int connectType = 0;//1：连接成功？ 2 正在连接（如果wifi热点列表发生变需要该字段）
+    /***************头部已连接wifi信息******************/
 
-    private WifiBean connectedWifiItem;
 
+    /***************wifiPresenter******************/
     private WifiPresenter wifiPresenter;
+    /***************wifiPresenter******************/
+
+
+    /**
+     * 权限申请的回调
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean hasAllPermission = true;
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int i : grantResults) {
+                if (i != PackageManager.PERMISSION_GRANTED) {
+                    hasAllPermission = false;   //判断用户是否同意获取权限
+                    break;
+                }
+            }
+            //如果同意权限
+            if (hasAllPermission) {
+                mHasPermission = true;
+                if (wifiPresenter.isOpenWifi(MainActivity.this)) {  //如果wifi开关是开 并且 已经获取权限
+                    initUIAndEvent();
+                } else {
+                    showToast("请打开WiFi");
+                }
+
+            } else {  //用户不同意权限
+                mHasPermission = false;
+                showToast("获取权限失败");
+            }
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_wifi_list);
+
+        //持有wifiPresenter
         wifiPresenter = new WifiPresenterImpl(this);
+
         //检查权限
-        mHasPermission = checkPermission();
+        mHasPermission = checkPermission(NEEDED_PERMISSIONS);
 
-        if (!mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {  //未获取权限，申请权限
-            requestPermission();
+        if (!mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {   //未获取权限，申请权限
+            requestPermission(NEEDED_PERMISSIONS);
         } else if (mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {  //已经获取权限
-
             initUIAndEvent();
         } else {
             showToast("请打开WiFi");
         }
     }
 
-    private void showToast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
 
+    /**
+     * 初始化页面和点击事件
+     */
     private void initUIAndEvent() {
-        //pbWifiLoading = findViewById(R.id.pb_wifi_loading);
-
-        //头部状态信息
+        //头部连接wifi信息
         tvConnectInfo = findViewById(R.id.tv_connect_info);
         headInfoLinearLayout = findViewById(R.id.ly_head_info);
         headWifiSignalView = findViewById(R.id.fl_head_item_icon);
         headConnectedWiFiName = findViewById(R.id.tv_item_wifi_name);
         headDisconnectTv = findViewById(R.id.tv_head_wifi_disconnect);
         headMoreIv = findViewById(R.id.iv_head_more);
-       // headConnectedWiFiState = findViewById(R.id.tv_head_item_wifi_status);
 
+        //开始时设置为不可见
         tvConnectInfo.setText("当前无连接WiFi");
         headInfoLinearLayout.setVisibility(View.GONE);
 
+        //more
         headMoreIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,21 +165,18 @@ public class MainActivity extends AppCompatActivity implements WifiView{
             @Override
             public void onClick(View v) {
                 wifiPresenter.disconnect(MainActivity.this);
-                Log.e(TAG, "onClick: disconnect" );
+                Log.i(TAG, "onClick: disconnect" );
             }
         });
 
         //wifi列表
         recyWifiList = findViewById(R.id.recy_list_wifi);
-
-        //hidingProgressBar();
-
-        adapter = new WifiListAdapter(this, realWifiList);
-
+        adapter = new WifiListAdapter(this, wifiBeanList);
         mLinearLayoutManager = new LinearLayoutManager(this);
         recyWifiList.setLayoutManager(mLinearLayoutManager);
         recyWifiList.setAdapter(adapter);
 
+        //下拉刷新
         recyWifiList.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -155,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                 pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
 
                 if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-//                    isEnd = true;
-                    Log.i(TAG, "Last Item Wow !");
+                    Log.i(TAG, "拉到底部");
                      showToast("正在刷新WiFi");
                     //进行刷新wifi的操作
                     getAndSortScaResult();
@@ -165,12 +195,12 @@ public class MainActivity extends AppCompatActivity implements WifiView{
             }
         });
 
-
+        //list的点击连接事件
         adapter.setOnItemClickListener(new WifiListAdapter.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(WifiDetailActivity.jumpToDetailPage(MainActivity.this,realWifiList.get(position).getWifiName(),
-                        realWifiList.get(position).getLevelGrade(),realWifiList.get(position).getCapabilities()));
+                startActivity(WifiDetailActivity.jumpToDetailPage(MainActivity.this,wifiBeanList.get(position).getWifiName(),
+                        wifiBeanList.get(position).getLevelGrade(),wifiBeanList.get(position).getCapabilities()));
             }
 
             /**
@@ -180,12 +210,11 @@ public class MainActivity extends AppCompatActivity implements WifiView{
              */
             @Override
             public void onConnect(View view, int position, Object o) {
-                WifiBean wifiBean = realWifiList.get(position);
+                WifiBean wifiBean = wifiBeanList.get(position);
                 //
                 if (wifiBean.getState().equals(WifiBean.WIFI_STATE_DISCONNECT)) {
-                    String capabilities = realWifiList.get(position).getCapabilities();
 
-                    if (!realWifiList.get(position).isNeedPassword()) {//无需密码
+                    if (!wifiBeanList.get(position).isNeedPassword()) {//无需密码
 
                         //查看以前是否也配置过这个网络
                         WifiConfiguration tempConfig = wifiPresenter.isExsits(wifiBean.getWifiName(), MainActivity.this);
@@ -204,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements WifiView{
             }
         });
 
-
         getAndSortScaResult();
     }
 
@@ -213,53 +241,18 @@ public class MainActivity extends AppCompatActivity implements WifiView{
      * 不改变头部wifi状态
      */
     public void getAndSortScaResult() {
-        //获取扫描到的wifi的list
-        List<ScanResult> scanResults = wifiPresenter.getWifiScanResult(MainActivity.this);
-        realWifiList.clear();
-        if (!isNullOrEmpty(scanResults)) {
-            for (int i = 0; i < scanResults.size(); i++) {
-                if(connectedWifiItem != null &&
-                        connectedWifiItem.getWifiName().equals(scanResults.get(i).SSID)){
-                    continue;
-                }
-                WifiBean wifiBean = new WifiBean();
-
-                //获取SSID
-                wifiBean.setWifiName(scanResults.get(i).SSID);
-                //只要获取都假设设置成未连接，真正的状态都通过广播来确定
-                wifiBean.setState(WifiBean.WIFI_STATE_DISCONNECT);
-
-                String capabilities = scanResults.get(i).capabilities;
-                wifiBean.setCapabilities(capabilities);
-
-                //是否加密wifi
-                if (wifiPresenter.getWifiCipher(capabilities) == WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS) {
-                    wifiBean.setNeedPassword(false);
-                } else
-                    wifiBean.setNeedPassword(true);
-
-                //信号强度
-                int level =scanResults.get(i).level;
-                wifiBean.setLevel(level);
-                //Log.e(TAG, "getAndSortScaResult: "+level );
-                //level等级
-                wifiBean.setLevelGrade(wifiPresenter.getLevelByGrade(level));
-
-                realWifiList.add(wifiBean);
-            }//for
-            //排序
-            Collections.sort(realWifiList);
-
-            adapter.notifyDataSetChanged();
-        }
-
+        wifiBeanList.clear();
+        wifiPresenter.getSortScanResult(MainActivity.this,
+                connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
+        Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
+        adapter.notifyDataSetChanged();
     }
 
     //之前没配置过该网络， 弹出输入密码界面
     private void noConfigurationWifi(int position) {
         WifiLinkDialog linkDialog = new WifiLinkDialog(this, R.style.dialog_download,
-                realWifiList.get(position).getWifiName(),
-                realWifiList.get(position).getCapabilities());
+                wifiBeanList.get(position).getWifiName(),
+                wifiBeanList.get(position).getCapabilities());
         if (!linkDialog.isShowing()) {
             linkDialog.show();
         }
@@ -328,11 +321,11 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                     Log.e(TAG, "wifi没连接上");
                     //hidingProgressBar();
                     if(connectedWifiItem != null)
-                        realWifiList.add(new WifiBean(connectedWifiItem));
-                    for (int i = 0; i < realWifiList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
-                        realWifiList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
+                        wifiBeanList.add(new WifiBean(connectedWifiItem));
+                    for (int i = 0; i < wifiBeanList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
+                        wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
                     }
-                    Collections.sort(realWifiList);
+                    Collections.sort(wifiBeanList);
                     adapter.notifyDataSetChanged();
 
                     wifiPresenter.refreshConnectedWiFiInfo();
@@ -347,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                     Log.e(TAG, connectedWifiInfo.getSSID());
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     Log.e(TAG, "wifi正在连接");
-                    //showProgressBar();
                     WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(MainActivity.this);
                     connectType = 2;
                     updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
@@ -375,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
     //包括 显示头部已连接，正在连接
     public void updateWifiInfo(String wifiName, int type) {
         int index = -1;
-        if (isNullOrEmpty(realWifiList)) {
+        if (wifiBeanList == null || wifiBeanList.size() == 0) {
             return;
         }
 
@@ -393,10 +385,10 @@ public class MainActivity extends AppCompatActivity implements WifiView{
 
         WifiBean connectedWifiItemTemp = new WifiBean();
 
-        for (int i = 0; i < realWifiList.size(); i++) {
-            realWifiList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
+        for (int i = 0; i < wifiBeanList.size(); i++) {
+            wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
 
-            WifiBean wifiBean = realWifiList.get(i);
+            WifiBean wifiBean = wifiBeanList.get(i);
             if (index == -1 && ("\"" + wifiBean.getWifiName() + "\"").equals(wifiName)) {
 
                 index = i;
@@ -415,10 +407,10 @@ public class MainActivity extends AppCompatActivity implements WifiView{
         }//for
         Log.e(TAG, "updateWifiInfo: "+index);
         if (index != -1) {
-            realWifiList.remove(index);
+            wifiBeanList.remove(index);
             if(connectedWifiItem != null) {
-                realWifiList.add(new WifiBean(connectedWifiItem));
-                Collections.sort(realWifiList);
+                wifiBeanList.add(new WifiBean(connectedWifiItem));
+                Collections.sort(wifiBeanList);
             }
             //更新头部item
             connectedWifiItem = connectedWifiItemTemp;
@@ -430,7 +422,10 @@ public class MainActivity extends AppCompatActivity implements WifiView{
     }
 
 
-    //更新头部WiFi状态信息
+    /**
+     * 更新头部状态信息
+     */
+    @Override
     public void refreshConnectedWiFiInfo() {
         if(connectedWifiItem != null){
             if(connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECT)){
@@ -473,68 +468,6 @@ public class MainActivity extends AppCompatActivity implements WifiView{
             }
         }else
             headInfoLinearLayout.setVisibility(View.GONE);
-
-    }
-
-    /**
-     * 检查是否已经授予权限
-     *
-     * @return
-     */
-    private boolean checkPermission() {
-        for (String permission : NEEDED_PERMISSIONS) {
-            if (ActivityCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 申请权限
-     */
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(this,
-                NEEDED_PERMISSIONS, PERMISSION_REQUEST_CODE);
-    }
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        boolean hasAllPermission = true;
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            for (int i : grantResults) {
-                if (i != PackageManager.PERMISSION_GRANTED) {
-                    hasAllPermission = false;   //判断用户是否同意获取权限
-                    break;
-                }
-            }
-
-            //如果同意权限
-            if (hasAllPermission) {
-                mHasPermission = true;
-                if (wifiPresenter.isOpenWifi(MainActivity.this)) {  //如果wifi开关是开 并且 已经获取权限
-                    initUIAndEvent();
-                } else {
-                    showToast("请打开WiFi");
-                }
-
-            } else {  //用户不同意权限
-                mHasPermission = false;
-                showToast("获取权限失败");
-            }
-        }
-    }
-
-
-    public static boolean isNullOrEmpty(Collection c) {
-        if (null == c || c.isEmpty()) {
-            return true;
-        }
-        return false;
     }
 
 }
