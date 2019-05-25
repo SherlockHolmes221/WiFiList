@@ -189,7 +189,8 @@ public class MainActivity extends BaseActivity implements WifiView{
                     Log.i(TAG, "拉到底部");
                      showToast("正在刷新WiFi");
                     //进行刷新wifi的操作
-                    getAndSortScaResult();
+                    wifiPresenter.getSortScanResult(MainActivity.this,
+                            connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
                     recyclerView.scrollToPosition(0);
                 }
             }
@@ -233,20 +234,11 @@ public class MainActivity extends BaseActivity implements WifiView{
             }
         });
 
-        getAndSortScaResult();
-    }
-
-    /**
-     * 获取wifi列表然后将bean转成自己定义的WifiBean
-     * 不改变头部wifi状态
-     */
-    public void getAndSortScaResult() {
-        wifiBeanList.clear();
         wifiPresenter.getSortScanResult(MainActivity.this,
                 connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
         Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
-        adapter.notifyDataSetChanged();
     }
+
 
     //之前没配置过该网络， 弹出输入密码界面
     private void noConfigurationWifi(int position) {
@@ -302,7 +294,8 @@ public class MainActivity extends BaseActivity implements WifiView{
                     }
                     case WifiManager.WIFI_STATE_ENABLED: {
                         Log.d(TAG, "已经打开");
-                        getAndSortScaResult();
+                        wifiPresenter.getSortScanResult(MainActivity.this,
+                                connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
                         break;
                     }
                     case WifiManager.WIFI_STATE_ENABLING: {
@@ -319,30 +312,28 @@ public class MainActivity extends BaseActivity implements WifiView{
                 Log.d(TAG, "--NetworkInfo--" + info.toString());
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
                     Log.e(TAG, "wifi没连接上");
-                    //hidingProgressBar();
-                    if(connectedWifiItem != null)
-                        wifiBeanList.add(new WifiBean(connectedWifiItem));
-                    for (int i = 0; i < wifiBeanList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
-                        wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
-                    }
-                    Collections.sort(wifiBeanList);
+
+                    //未连接的逻辑
+                    wifiPresenter.disconnected(connectedWifiItem,wifiBeanList);
                     adapter.notifyDataSetChanged();
 
-                    wifiPresenter.refreshConnectedWiFiInfo();
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
+
                     Log.e(TAG, "wifi连接上了");
-                    //hidingProgressBar();
-                    WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(MainActivity.this);
-                    //连接成功 跳转界面 传递ip地址
                     showToast("wifi已连接");
+
+                    //已经连接的逻辑
                     connectType = 1;
-                    updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
-                    Log.e(TAG, connectedWifiInfo.getSSID());
+                    wifiPresenter.connectingOrConnected(MainActivity.this,connectedWifiItem,wifiBeanList,connectType);
+
+
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     Log.e(TAG, "wifi正在连接");
-                    WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(MainActivity.this);
+
+                    //正在连接的逻辑
                     connectType = 2;
-                    updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
+                    wifiPresenter.connectingOrConnected(MainActivity.this,connectedWifiItem,wifiBeanList,connectType);
+
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 Log.e(TAG, "网络列表变化了");
@@ -352,75 +343,15 @@ public class MainActivity extends BaseActivity implements WifiView{
     }
 
     /**
-     * //网络状态发生改变 调用此方法！
+     * //网络状态发生改变
      */
     public void wifiListChange() {
-        getAndSortScaResult();
-        WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(this);
-        if (connectedWifiInfo != null) {
-            updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
-        }
+        wifiPresenter.getSortScanResult(MainActivity.this,
+                connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
+        Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
+
+        wifiPresenter.wifiListChange(MainActivity.this,connectedWifiItem,wifiBeanList,connectType);
     }
-
-
-    //更新wifi信息
-    //包括 显示头部已连接，正在连接
-    public void updateWifiInfo(String wifiName, int type) {
-        int index = -1;
-        if (wifiBeanList == null || wifiBeanList.size() == 0) {
-            return;
-        }
-
-        //从已经连接到正在连接的状态,只需要更新头部信息
-        if(connectedWifiItem != null &&
-                ("\"" + connectedWifiItem.getWifiName() + "\"").equals(wifiName) &&
-                connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECTING) &&
-                type == 1){
-            connectedWifiItem.setState(WifiBean.WIFI_STATE_CONNECT);
-
-            wifiPresenter.refreshConnectedWiFiInfo();
-            //refreshConnectedWiFiInfo();
-            return;
-        }
-
-        WifiBean connectedWifiItemTemp = new WifiBean();
-
-        for (int i = 0; i < wifiBeanList.size(); i++) {
-            wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
-
-            WifiBean wifiBean = wifiBeanList.get(i);
-            if (index == -1 && ("\"" + wifiBean.getWifiName() + "\"").equals(wifiName)) {
-
-                index = i;
-                int level = wifiBean.getLevel();
-//                Log.e(TAG, String.valueOf(level));
-                connectedWifiItemTemp.setLevel(level);
-                connectedWifiItemTemp.setWifiName(wifiBean.getWifiName());
-                connectedWifiItemTemp.setLevelGrade(wifiPresenter.getLevelByGrade(level));
-                connectedWifiItemTemp.setCapabilities(wifiBean.getCapabilities());
-                if (type == 1) {
-                    connectedWifiItemTemp.setState(WifiBean.WIFI_STATE_CONNECT);
-                } else {
-                    connectedWifiItemTemp.setState(WifiBean.WIFI_STATE_CONNECTING);
-                }
-            }
-        }//for
-        Log.e(TAG, "updateWifiInfo: "+index);
-        if (index != -1) {
-            wifiBeanList.remove(index);
-            if(connectedWifiItem != null) {
-                wifiBeanList.add(new WifiBean(connectedWifiItem));
-                Collections.sort(wifiBeanList);
-            }
-            //更新头部item
-            connectedWifiItem = connectedWifiItemTemp;
-            adapter.notifyDataSetChanged();
-        }
-
-        //更新头部wifi的UI
-        wifiPresenter.refreshConnectedWiFiInfo();
-    }
-
 
     /**
      * 更新头部状态信息
@@ -468,6 +399,11 @@ public class MainActivity extends BaseActivity implements WifiView{
             }
         }else
             headInfoLinearLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void updateList() {
+        adapter.notifyDataSetChanged();
     }
 
 }

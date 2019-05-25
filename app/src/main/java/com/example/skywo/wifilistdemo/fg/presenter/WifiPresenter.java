@@ -14,7 +14,11 @@ public interface WifiPresenter {
 
     void getSortScanResult(Context context,String ssid,List<WifiBean> wifiBeanList);
 
-    void refreshConnectedWiFiInfo();
+    void disconnected(WifiBean connectedWifiItem,List<WifiBean> wifiBeanList);
+
+    void connectingOrConnected(Context context,WifiBean connectedWifiItem,List<WifiBean> wifiBeanList,int connectType);
+
+    void wifiListChange(Context context,WifiBean connectedWifiItem,List<WifiBean> wifiBeanList,int connectType);
 
     boolean isOpenWifi(Context context);
 
@@ -27,10 +31,6 @@ public interface WifiPresenter {
     void addNetWork(WifiConfiguration wifiConfiguration,Context context);
 
     WifiSessionManager.WifiCipherType getWifiCipher(String capabilities);
-
-    int getLevelByGrade(int level);
-
-    WifiInfo getConnectedWifiInfo(Context context);
 
 
 }
