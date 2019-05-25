@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
+import com.example.skywo.wifilistdemo.fg.presenter.WifiPresenter;
+import com.example.skywo.wifilistdemo.fg.presenter.impl.WifiPresenterImpl;
 
 public class WifiLinkDialog extends Dialog implements View.OnClickListener{
 
@@ -34,6 +36,8 @@ public class WifiLinkDialog extends Dialog implements View.OnClickListener{
 
     private Context mContext;
 
+    private WifiPresenter presenter;
+
 
     public WifiLinkDialog(@NonNull Context context, @StyleRes int themeResId, String text_nameString, String capabilities) {
         super(context, themeResId);
@@ -41,6 +45,7 @@ public class WifiLinkDialog extends Dialog implements View.OnClickListener{
         this.capabilities = capabilities;
 
         mContext = context;
+        presenter = new WifiPresenterImpl();
 
     }
 
@@ -100,12 +105,14 @@ public class WifiLinkDialog extends Dialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cofirm_button:{
-                WifiConfiguration tempConfig  = WifiSessionManager.isExsits(text_nameString,getContext());
+                WifiConfiguration tempConfig  = presenter.isExsits(text_nameString,getContext());
                 if(tempConfig == null){
-                    WifiConfiguration wifiConfiguration =  WifiSessionManager.createWifiConfig(text_nameString,password_edit.getText().toString(), WifiSessionManager.getWifiCipher(capabilities));
-                    WifiSessionManager.addNetWork(wifiConfiguration,getContext());
+                    WifiConfiguration wifiConfiguration =  presenter.createWifiConfig(
+                            text_nameString,password_edit.getText().toString(),
+                            presenter.getWifiCipher(capabilities));
+                    presenter.addNetWork(wifiConfiguration,getContext());
                 }else{
-                    WifiSessionManager.addNetWork(tempConfig,getContext());
+                    presenter.addNetWork(tempConfig,getContext());
                 }
                 dismiss();
                 break;

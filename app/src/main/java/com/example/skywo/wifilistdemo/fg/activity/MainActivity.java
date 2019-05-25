@@ -84,13 +84,14 @@ public class MainActivity extends AppCompatActivity implements WifiView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_wifi_list);
+        wifiPresenter = new WifiPresenterImpl(this);
         //检查权限
         mHasPermission = checkPermission();
 
-        if (!mHasPermission && WifiSessionManager.isOpenWifi(MainActivity.this)) {  //未获取权限，申请权限
+        if (!mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {  //未获取权限，申请权限
             requestPermission();
-        } else if (mHasPermission && WifiSessionManager.isOpenWifi(MainActivity.this)) {  //已经获取权限
-            wifiPresenter = new WifiPresenterImpl(this);
+        } else if (mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {  //已经获取权限
+
             initUIAndEvent();
         } else {
             showToast("请打开WiFi");
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
         headDisconnectTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WifiSessionManager.disconnect(MainActivity.this);
+                wifiPresenter.disconnect(MainActivity.this);
                 Log.e(TAG, "onClick: disconnect" );
             }
         });
@@ -187,12 +188,12 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                     if (!realWifiList.get(position).isNeedPassword()) {//无需密码
 
                         //查看以前是否也配置过这个网络
-                        WifiConfiguration tempConfig = WifiSessionManager.isExsits(wifiBean.getWifiName(), MainActivity.this);
+                        WifiConfiguration tempConfig = wifiPresenter.isExsits(wifiBean.getWifiName(), MainActivity.this);
                         if (tempConfig == null) {
-                            WifiConfiguration exsits = WifiSessionManager.createWifiConfig(wifiBean.getWifiName(), null, WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS);
-                            WifiSessionManager.addNetWork(exsits, MainActivity.this);
+                            WifiConfiguration exsits = wifiPresenter.createWifiConfig(wifiBean.getWifiName(), null, WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS);
+                            wifiPresenter.addNetWork(exsits, MainActivity.this);
                         } else {
-                            WifiSessionManager.addNetWork(tempConfig, MainActivity.this);
+                            wifiPresenter.addNetWork(tempConfig, MainActivity.this);
                         }
                     } else {   //需要密码，弹出输入密码dialog
                         noConfigurationWifi(position);
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                 wifiBean.setCapabilities(capabilities);
 
                 //是否加密wifi
-                if (WifiSessionManager.getWifiCipher(capabilities) == WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS) {
+                if (wifiPresenter.getWifiCipher(capabilities) == WifiSessionManager.WifiCipherType.WIFICIPHER_NOPASS) {
                     wifiBean.setNeedPassword(false);
                 } else
                     wifiBean.setNeedPassword(true);
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                 wifiBean.setLevel(level);
                 //Log.e(TAG, "getAndSortScaResult: "+level );
                 //level等级
-                wifiBean.setLevelGrade(WifiSessionManager.getLevelByGrade(level));
+                wifiBean.setLevelGrade(wifiPresenter.getLevelByGrade(level));
 
                 realWifiList.add(wifiBean);
             }//for
@@ -338,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                     Log.e(TAG, "wifi连接上了");
                     //hidingProgressBar();
-                    WifiInfo connectedWifiInfo = WifiSessionManager.getConnectedWifiInfo(MainActivity.this);
+                    WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(MainActivity.this);
                     //连接成功 跳转界面 传递ip地址
                     showToast("wifi已连接");
                     connectType = 1;
@@ -347,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     Log.e(TAG, "wifi正在连接");
                     //showProgressBar();
-                    WifiInfo connectedWifiInfo = WifiSessionManager.getConnectedWifiInfo(MainActivity.this);
+                    WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(MainActivity.this);
                     connectType = 2;
                     updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
                 }
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
      */
     public void wifiListChange() {
         getAndSortScaResult();
-        WifiInfo connectedWifiInfo = WifiSessionManager.getConnectedWifiInfo(this);
+        WifiInfo connectedWifiInfo = wifiPresenter.getConnectedWifiInfo(this);
         if (connectedWifiInfo != null) {
             updateWifiInfo(connectedWifiInfo.getSSID(), connectType);
         }
@@ -403,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
 //                Log.e(TAG, String.valueOf(level));
                 connectedWifiItemTemp.setLevel(level);
                 connectedWifiItemTemp.setWifiName(wifiBean.getWifiName());
-                connectedWifiItemTemp.setLevelGrade(WifiSessionManager.getLevelByGrade(level));
+                connectedWifiItemTemp.setLevelGrade(wifiPresenter.getLevelByGrade(level));
                 connectedWifiItemTemp.setCapabilities(wifiBean.getCapabilities());
                 if (type == 1) {
                     connectedWifiItemTemp.setState(WifiBean.WIFI_STATE_CONNECT);
@@ -515,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements WifiView{
             //如果同意权限
             if (hasAllPermission) {
                 mHasPermission = true;
-                if (WifiSessionManager.isOpenWifi(MainActivity.this)) {  //如果wifi开关是开 并且 已经获取权限
+                if (wifiPresenter.isOpenWifi(MainActivity.this)) {  //如果wifi开关是开 并且 已经获取权限
                     initUIAndEvent();
                 } else {
                     showToast("请打开WiFi");

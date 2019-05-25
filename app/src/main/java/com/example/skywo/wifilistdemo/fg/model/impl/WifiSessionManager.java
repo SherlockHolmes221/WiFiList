@@ -16,12 +16,6 @@ import java.util.List;
 public class WifiSessionManager implements WifiSession {
     private static final String TAG = "WifiSessionManager";
 
-    @Override
-    public List<ScanResult> getWifiScanResult(Context context) {
-        return noSameName(((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults());
-    }
-
-
     public enum WifiCipherType {
         WIFICIPHER_WEP,
         WIFICIPHER_WPA,
@@ -29,29 +23,28 @@ public class WifiSessionManager implements WifiSession {
         WIFICIPHER_INVALID
     }
 
-    public WifiSessionManager() {
+    @Override
+    public List<ScanResult> getWifiScanResult(Context context) {
+        return noSameName(((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults());
     }
 
-
-//    public static List<ScanResult> getWifiScanResult(Context context) {
-//        boolean b = context == null;
-//        return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults();
-//    }
-
-    public static boolean isWifiEnable(Context context) {
+    @Override
+    public boolean isWifiEnable(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).isWifiEnabled();
     }
 
-    public static WifiInfo getConnectedWifiInfo(Context context) {
+    @Override
+    public WifiInfo getConnectedWifiInfo(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getConnectionInfo();
     }
 
-    public static List getConfigurations(Context context) {
+    @Override
+    public List getConfigurations(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getConfiguredNetworks();
     }
 
-
-    public static WifiConfiguration createWifiConfig(String SSID, String password, WifiCipherType type) {
+    @Override
+    public WifiConfiguration createWifiConfig(String SSID, String password, WifiCipherType type) {
 
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
@@ -99,7 +92,8 @@ public class WifiSessionManager implements WifiSession {
     /**
      * 接入某个wifi热点
      */
-    public static boolean addNetWork(WifiConfiguration config, Context context) {
+    @Override
+    public boolean addNetWork(WifiConfiguration config, Context context) {
 
         WifiManager wifimanager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
 
@@ -133,7 +127,8 @@ public class WifiSessionManager implements WifiSession {
     /**
      * 判断wifi热点支持的加密方式
      */
-    public static WifiCipherType getWifiCipher(String s) {
+    @Override
+    public WifiCipherType getWifiCipher(String s) {
 
         if (s.isEmpty()) {
             return WifiCipherType.WIFICIPHER_INVALID;
@@ -147,7 +142,8 @@ public class WifiSessionManager implements WifiSession {
     }
 
     //查看以前是否也配置过这个网络
-    public static WifiConfiguration isExsits(String SSID, Context context) {
+    @Override
+    public WifiConfiguration isExsits(String SSID, Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         List<WifiConfiguration> existingConfigs = wifimanager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs) {
@@ -171,7 +167,8 @@ public class WifiSessionManager implements WifiSession {
      */
 
     // 打开WIFI
-    public static void openWifi(Context context) {
+    @Override
+    public void openWifi(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (!wifimanager.isWifiEnabled()) {
             wifimanager.setWifiEnabled(true);
@@ -179,36 +176,19 @@ public class WifiSessionManager implements WifiSession {
     }
 
     // 关闭WIFI
-    public static void closeWifi(Context context) {
+    @Override
+    public void closeWifi(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (wifimanager.isWifiEnabled()) {
             wifimanager.setWifiEnabled(false);
         }
     }
 
-    public static boolean isOpenWifi(Context context){
+    @Override
+    public  boolean isOpenWifi(Context context){
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         boolean b = wifimanager.isWifiEnabled();
         return b;
-    }
-
-    /**
-     * 将idAddress转化成string类型的Id字符串
-     *
-     * @param idString
-     * @return
-     */
-    public static String getStringId(int idString) {
-        StringBuffer sb = new StringBuffer();
-        int b = (idString >> 0) & 0xff;
-        sb.append(b + ".");
-        b = (idString >> 8) & 0xff;
-        sb.append(b + ".");
-        b = (idString >> 16) & 0xff;
-        sb.append(b + ".");
-        b = (idString >> 24) & 0xff;
-        sb.append(b);
-        return sb.toString();
     }
 
     /**
@@ -217,7 +197,8 @@ public class WifiSessionManager implements WifiSession {
      * @param capabilities
      * @return
      */
-    public static String getCapabilitiesString(String capabilities) {
+    @Override
+    public String getCapabilitiesString(String capabilities) {
         if (capabilities.contains("WEP")) {
             return "WEP";
         } else if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPS")) {
@@ -227,32 +208,19 @@ public class WifiSessionManager implements WifiSession {
         }
     }
 
-    public static boolean getIsWifiEnabled(Context context) {
+    @Override
+    public boolean getIsWifiEnabled(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return wifimanager.isWifiEnabled();
     }
 
-    public static void getReplace(Context context, List<WifiBean> list) {
-        WifiInfo wifi = WifiSessionManager.getConnectedWifiInfo(context);
-        List<WifiBean> listCopy = new ArrayList<>();
-        listCopy.addAll(list);
-        for (int i = 0; i < list.size(); i++) {
-            if (("\"" + list.get(i).getWifiName() + "\"").equals(wifi.getSSID())) {
-                listCopy.add(0, list.get(i));
-                listCopy.remove(i + 1);
-                listCopy.get(0).setState("已连接");
-            }
-        }
-        list.clear();
-        list.addAll(listCopy);
-    }
     /**
      * 去除同名WIFI
      *
      * @param oldSr 需要去除同名的列表
      * @return 返回不包含同命的列表
      */
-    public static List<ScanResult> noSameName(List<ScanResult> oldSr) {
+    private List<ScanResult> noSameName(List<ScanResult> oldSr) {
         List<ScanResult> newSr = new ArrayList<ScanResult>();
         for (ScanResult result : oldSr) {
             if (!TextUtils.isEmpty(result.SSID) && !containName(newSr, result.SSID))
@@ -267,7 +235,7 @@ public class WifiSessionManager implements WifiSession {
      * @param name 要查询的名称
      * @return 返回true表示包含了该名称的WIFI，返回false表示不包含
      */
-    public static boolean containName(List<ScanResult> sr, String name) {
+    private static boolean containName(List<ScanResult> sr, String name) {
         for (ScanResult result : sr) {
             if (!TextUtils.isEmpty(result.SSID) && result.SSID.equals(name))
                 return true;
@@ -275,22 +243,8 @@ public class WifiSessionManager implements WifiSession {
         return false;
     }
 
-    /**
-     * 返回level 等级
-     */
-    public static int getLevel(int level){
-        if (Math.abs(level) < 50) {
-            return 1;
-        } else if (Math.abs(level) < 75) {
-            return 2;
-        } else if (Math.abs(level) < 90) {
-            return 3;
-        } else {
-            return 4;
-        }
-    }
-
-    public static int getLevelByGrade(int level) {
+    @Override
+    public int getLevelByGrade(int level) {
         if(level < -85)
             return 1;
         else if(level < -70)
@@ -303,19 +257,22 @@ public class WifiSessionManager implements WifiSession {
 
 
     // 开始扫描 WIFI.
-    public static void startScanWifi(WifiManager manager) {
+    @Override
+    public  void startScanWifi(WifiManager manager) {
         if (manager != null) {
             manager.startScan();
         }
     }
 
     // 获取 WIFI 的状态.
-    public static int getWifiState(WifiManager manager) {
+    @Override
+    public int getWifiState(WifiManager manager) {
         return manager == null ? WifiManager.WIFI_STATE_UNKNOWN : manager.getWifiState();
     }
 
     //断开连接
-    public static void disconnect(Context context){
+    @Override
+    public void disconnect(Context context){
         WifiManager wifimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wifimanager.disconnect();
     }
