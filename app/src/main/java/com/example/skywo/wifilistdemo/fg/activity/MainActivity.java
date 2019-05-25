@@ -68,7 +68,7 @@ public class MainActivity extends BaseActivity implements WifiView{
     private LinearLayout headInfoLinearLayout;
     private WifiSignalView headWifiSignalView;
     private TextView headConnectedWiFiName;
-    private TextView headDisconnectTv;
+//    private TextView headDisconnectTv;
     private ImageView headMoreIv;
     private int connectType = 0;//1：连接成功？ 2 正在连接（如果wifi热点列表发生变需要该字段）
     /***************头部已连接wifi信息******************/
@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity implements WifiView{
         headInfoLinearLayout = findViewById(R.id.ly_head_info);
         headWifiSignalView = findViewById(R.id.fl_head_item_icon);
         headConnectedWiFiName = findViewById(R.id.tv_item_wifi_name);
-        headDisconnectTv = findViewById(R.id.tv_head_wifi_disconnect);
+//        headDisconnectTv = findViewById(R.id.tv_head_wifi_disconnect);
         headMoreIv = findViewById(R.id.iv_head_more);
 
         //开始时设置为不可见
@@ -167,13 +167,13 @@ public class MainActivity extends BaseActivity implements WifiView{
 
 
         //断开连接的点击事件
-        headDisconnectTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wifiPresenter.disconnect(MainActivity.this);
-                Log.i(TAG, "onClick: disconnect" );
-            }
-        });
+//        headDisconnectTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                wifiPresenter.disconnect(MainActivity.this);
+//                Log.i(TAG, "onClick: disconnect" );
+//            }
+//        });
 
         //wifi列表
         recyWifiList = findViewById(R.id.recy_list_wifi);
@@ -378,7 +378,7 @@ public class MainActivity extends BaseActivity implements WifiView{
                 headConnectedWiFiName.setText(connectedWifiItem.getWifiName().length() <=20 ?
                         connectedWifiItem.getWifiName() : connectedWifiItem.getWifiName().substring(0,20)+"...");
 
-                headDisconnectTv.setVisibility(View.VISIBLE);
+                //headDisconnectTv.setVisibility(View.VISIBLE);
                 headMoreIv.setVisibility(View.VISIBLE);
 
             }else if(connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECTING)){
@@ -395,7 +395,7 @@ public class MainActivity extends BaseActivity implements WifiView{
                         connectedWifiItem.getWifiName() : connectedWifiItem.getWifiName().substring(20)+"...");
 
                 //隐藏按钮
-                headDisconnectTv.setVisibility(View.GONE);
+                //headDisconnectTv.setVisibility(View.GONE);
                 headMoreIv.setVisibility(View.VISIBLE);
             }else {
                 tvConnectInfo.setText(R.string.wifi_disconnected);

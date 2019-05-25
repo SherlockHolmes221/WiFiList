@@ -88,9 +88,9 @@ public class WifiPresenterImpl implements WifiPresenter {
      */
     @Override
     public void disconnected(WifiBean connectedWifiItem, List<WifiBean> wifiBeanList) {
-        if(connectedWifiItem != null) {
-            wifiBeanList.add(new WifiBean(connectedWifiItem));
-        }
+//        if(connectedWifiItem != null) {
+//            wifiBeanList.add(new WifiBean(connectedWifiItem));
+//        }
 
         for (int i = 0; i < wifiBeanList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
             wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);

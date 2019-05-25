@@ -83,17 +83,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
-                <TextView
-                    android:gravity="center"
-                    android:id="@+id/tv_head_wifi_disconnect"
-                    android:layout_width="80dp"
-                    android:layout_height="28dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/shape_blue_round_bg"
-                    android:layout_gravity="center"
-                    android:text="@string/wifi_list_item_disconnect"
-                    android:textColor="@drawable/selector_connect_view_text_color"
-                    android:textSize="14dp" />
+                <!--<TextView-->
+                    <!--android:gravity="center"-->
+                    <!--android:id="@+id/tv_head_wifi_disconnect"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="28dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:background="@drawable/shape_blue_round_bg"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:text="@string/wifi_list_item_disconnect"-->
+                    <!--android:textColor="@drawable/selector_connect_view_text_color"-->
+                    <!--android:textSize="14dp" />-->
 
                 <ImageView
                     android:id="@+id/iv_head_more"
