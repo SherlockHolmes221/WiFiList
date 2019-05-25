@@ -1,4 +1,6 @@
 ### WiFi简易开发
+#### 项目框架：
+![frame](https://raw.githubusercontent.com/SherlockHolmes221/WiFiList/master/frame.jpg)
 #### 权限
 ```aidl
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
