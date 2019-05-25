@@ -13,6 +13,17 @@ public class WifiBean implements Comparable<WifiBean> {
     private boolean isNeedPassword;
     private int levelGrade;
 
+    public WifiBean(WifiBean wifiBean) {
+        setCapabilities(wifiBean.getCapabilities());
+        setWifiName(wifiBean.getWifiName());
+        setLevel(wifiBean.getLevel());
+        setState(wifiBean.getState());
+        setNeedPassword(wifiBean.isNeedPassword);
+        setLevelGrade(wifiBean.getLevelGrade());
+    }
+
+    public WifiBean() {
+    }
 
     public String getCapabilities() {
         return capabilities;
