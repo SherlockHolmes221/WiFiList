@@ -523,14 +523,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    public void showProgressBar() {
-//        pbWifiLoading.setVisibility(View.VISIBLE);
-//    }
-//
-//    public void hidingProgressBar() {
-//        pbWifiLoading.setVisibility(View.GONE);
-//    }
-
     public static boolean isNullOrEmpty(Collection c) {
         if (null == c || c.isEmpty()) {
             return true;
