@@ -6,14 +6,12 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.util.Log;
 
-import com.example.skywo.wifilistdemo.fg.activity.MainActivity;
 import com.example.skywo.wifilistdemo.fg.activity.WifiView;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
 import com.example.skywo.wifilistdemo.fg.model.WifiSession;
 import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
 import com.example.skywo.wifilistdemo.fg.presenter.WifiPresenter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,14 +90,13 @@ public class WifiPresenterImpl implements WifiPresenter {
     public void disconnected(WifiBean connectedWifiItem, List<WifiBean> wifiBeanList) {
         if(connectedWifiItem != null) {
             wifiBeanList.add(new WifiBean(connectedWifiItem));
-            connectedWifiItem = null;
         }
 
         for (int i = 0; i < wifiBeanList.size(); i++) {//没连接上将 所有的连接状态都置为“未连接”
             wifiBeanList.get(i).setState(WifiBean.WIFI_STATE_DISCONNECT);
         }
         Collections.sort(wifiBeanList);
-        wifiView.refreshConnectedWiFiInfo();
+        wifiView.refreshConnectedWiFiInfo(connectedWifiItem);
         wifiView.updateList();
     }
 
@@ -181,7 +178,7 @@ public class WifiPresenterImpl implements WifiPresenter {
                 type == 1){
             connectedWifiItem.setState(WifiBean.WIFI_STATE_CONNECT);
 
-            wifiView.refreshConnectedWiFiInfo();
+            wifiView.refreshConnectedWiFiInfo(connectedWifiItem);
             return;
         }
 
@@ -217,7 +214,8 @@ public class WifiPresenterImpl implements WifiPresenter {
             connectedWifiItem = connectedWifiItemTemp;
         }
         //更新头部wifi的UI
-        wifiView.refreshConnectedWiFiInfo();
+        Log.e(TAG, "updateWifiInfo: " );
+        wifiView.refreshConnectedWiFiInfo(connectedWifiItem);
         wifiView.updateList();
     }
 

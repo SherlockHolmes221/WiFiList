@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity implements WifiView{
         setContentView(R.layout.layout_wifi_list);
 
         //持有wifiPresenter
-        wifiPresenter = new WifiPresenterImpl(this);
+        wifiPresenter = new WifiPresenterImpl(MainActivity.this);
 
         //检查权限
         mHasPermission = checkPermission(NEEDED_PERMISSIONS);
@@ -128,6 +128,12 @@ public class MainActivity extends BaseActivity implements WifiView{
             requestPermission(NEEDED_PERMISSIONS);
         } else if (mHasPermission && wifiPresenter.isOpenWifi(MainActivity.this)) {  //已经获取权限
             initUIAndEvent();
+
+            //获取wifi列表
+            wifiPresenter.getSortScanResult(MainActivity.this,
+                    connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
+            Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
+
         } else {
             showToast("请打开WiFi");
         }
@@ -233,10 +239,6 @@ public class MainActivity extends BaseActivity implements WifiView{
                 }
             }
         });
-
-        wifiPresenter.getSortScanResult(MainActivity.this,
-                connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
-        Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
     }
 
 
@@ -284,34 +286,35 @@ public class MainActivity extends BaseActivity implements WifiView{
                      * WIFI_STATE_UNKNOWN     未知
                      */
                     case WifiManager.WIFI_STATE_DISABLED: {
-                        Log.d(TAG, "已经关闭");
+                        Log.i(TAG, "已经关闭");
                         showToast("WiFi处于关闭状态");
                         break;
                     }
                     case WifiManager.WIFI_STATE_DISABLING: {
-                        Log.d(TAG, "正在关闭");
+                        Log.i(TAG, "正在关闭");
                         break;
                     }
                     case WifiManager.WIFI_STATE_ENABLED: {
-                        Log.d(TAG, "已经打开");
+                        Log.i(TAG, "已经打开");
                         wifiPresenter.getSortScanResult(MainActivity.this,
                                 connectedWifiItem == null ? null : connectedWifiItem.getWifiName(),wifiBeanList);
+                        Log.e(TAG, "getAndSortScaResult: "+wifiBeanList.size());
                         break;
                     }
                     case WifiManager.WIFI_STATE_ENABLING: {
-                        Log.d(TAG, "正在打开");
+                        Log.i(TAG, "正在打开");
                         break;
                     }
                     case WifiManager.WIFI_STATE_UNKNOWN: {
-                        Log.d(TAG, "未知状态");
+                        Log.i(TAG, "未知状态");
                         break;
                     }
                 }
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                Log.d(TAG, "--NetworkInfo--" + info.toString());
+                Log.i(TAG, "--NetworkInfo--" + info.toString());
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
-                    Log.e(TAG, "wifi没连接上");
+                    Log.i(TAG, "wifi没连接上");
 
                     //未连接的逻辑
                     wifiPresenter.disconnected(connectedWifiItem,wifiBeanList);
@@ -325,7 +328,6 @@ public class MainActivity extends BaseActivity implements WifiView{
                     //已经连接的逻辑
                     connectType = 1;
                     wifiPresenter.connectingOrConnected(MainActivity.this,connectedWifiItem,wifiBeanList,connectType);
-
 
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     Log.e(TAG, "wifi正在连接");
@@ -357,8 +359,10 @@ public class MainActivity extends BaseActivity implements WifiView{
      * 更新头部状态信息
      */
     @Override
-    public void refreshConnectedWiFiInfo() {
+    public void refreshConnectedWiFiInfo(WifiBean connectedWifiItem) {
+        Log.e(TAG, "refreshConnectedWiFiInfo: ");
         if(connectedWifiItem != null){
+            this.connectedWifiItem = connectedWifiItem;
             if(connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECT)){
                 Log.e(TAG, "refreshConnectedWiFiInfo: "+"WIFI_STATE_CONNECT" );
 
@@ -397,8 +401,10 @@ public class MainActivity extends BaseActivity implements WifiView{
                 tvConnectInfo.setText(R.string.wifi_disconnected);
                 headInfoLinearLayout.setVisibility(View.GONE);
             }
-        }else
+        }else {
+            Log.e(TAG, "refreshConnectedWiFiInfo: "+"null" );
             headInfoLinearLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

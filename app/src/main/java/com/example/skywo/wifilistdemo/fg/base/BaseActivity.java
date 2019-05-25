@@ -1,13 +1,11 @@
 package com.example.skywo.wifilistdemo.fg.base;
 
-import android.app.Application;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.example.skywo.wifilistdemo.fg.activity.MainActivity;
+
 
 public class BaseActivity extends AppCompatActivity{
     //权限请求码
