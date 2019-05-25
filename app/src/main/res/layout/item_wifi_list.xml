@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
-    <com.example.skywo.wifilistdemo.fg.view.WifiFrameLayout
+    <com.example.skywo.wifilistdemo.fg.UILib.WifiFrameLayout
         android:id="@+id/fl_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

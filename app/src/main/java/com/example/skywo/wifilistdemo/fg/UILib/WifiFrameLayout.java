@@ -1,4 +1,4 @@
-package com.example.skywo.wifilistdemo.fg.view;
+package com.example.skywo.wifilistdemo.fg.UILib;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

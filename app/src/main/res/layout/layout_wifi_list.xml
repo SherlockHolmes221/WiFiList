@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp">
 
-            <com.example.skywo.wifilistdemo.fg.view.WifiSignalView
+            <com.example.skywo.wifilistdemo.fg.UILib.WifiSignalView
                 android:id="@+id/fl_head_item_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

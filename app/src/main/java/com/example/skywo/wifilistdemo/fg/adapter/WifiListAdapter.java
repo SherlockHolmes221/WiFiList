@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
-import com.example.skywo.wifilistdemo.fg.view.WifiFrameLayout;
+import com.example.skywo.wifilistdemo.fg.UILib.WifiFrameLayout;
 
 import java.util.List;
 

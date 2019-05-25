@@ -21,23 +21,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.skywo.wifilistdemo.R;
 import com.example.skywo.wifilistdemo.fg.adapter.WifiListAdapter;
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
-import com.example.skywo.wifilistdemo.fg.manager.WifiSessionManager;
-import com.example.skywo.wifilistdemo.fg.view.WifiLinkDialog;
-import com.example.skywo.wifilistdemo.fg.view.WifiSignalView;
+import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
+import com.example.skywo.wifilistdemo.fg.presenter.WifiPresenter;
+import com.example.skywo.wifilistdemo.fg.UILib.WifiLinkDialog;
+import com.example.skywo.wifilistdemo.fg.presenter.impl.WifiPresenterImpl;
+import com.example.skywo.wifilistdemo.fg.UILib.WifiSignalView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements WifiView{
 
     private static final String TAG = "MainActivity";
     //权限请求码
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     private WifiBean connectedWifiItem;
 
+    private WifiPresenter wifiPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         if (!mHasPermission && WifiSessionManager.isOpenWifi(MainActivity.this)) {  //未获取权限，申请权限
             requestPermission();
         } else if (mHasPermission && WifiSessionManager.isOpenWifi(MainActivity.this)) {  //已经获取权限
+            wifiPresenter = new WifiPresenterImpl(this);
             initUIAndEvent();
         } else {
             showToast("请打开WiFi");
@@ -209,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void getAndSortScaResult() {
         //获取扫描到的wifi的list
-        List<ScanResult> scanResults = WifiSessionManager.noSameName(WifiSessionManager.getWifiScanResult(this));
+        List<ScanResult> scanResults = wifiPresenter.getWifiScanResult(MainActivity.this);
         realWifiList.clear();
         if (!isNullOrEmpty(scanResults)) {
             for (int i = 0; i < scanResults.size(); i++) {
@@ -247,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
         }
-
 
     }
 
@@ -330,7 +333,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Collections.sort(realWifiList);
                     adapter.notifyDataSetChanged();
-                    refreshConnectedWiFiInfo();
+
+                    wifiPresenter.refreshConnectedWiFiInfo();
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                     Log.e(TAG, "wifi连接上了");
                     //hidingProgressBar();
@@ -380,7 +384,9 @@ public class MainActivity extends AppCompatActivity {
                 connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECTING) &&
                 type == 1){
             connectedWifiItem.setState(WifiBean.WIFI_STATE_CONNECT);
-            refreshConnectedWiFiInfo();
+
+            wifiPresenter.refreshConnectedWiFiInfo();
+            //refreshConnectedWiFiInfo();
             return;
         }
 
@@ -419,12 +425,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //更新头部wifi的UI
-        refreshConnectedWiFiInfo();
+        wifiPresenter.refreshConnectedWiFiInfo();
     }
 
 
     //更新头部WiFi状态信息
-    private void refreshConnectedWiFiInfo() {
+    public void refreshConnectedWiFiInfo() {
         if(connectedWifiItem != null){
             if(connectedWifiItem.getState().equals(WifiBean.WIFI_STATE_CONNECT)){
                 Log.e(TAG, "refreshConnectedWiFiInfo: "+"WIFI_STATE_CONNECT" );

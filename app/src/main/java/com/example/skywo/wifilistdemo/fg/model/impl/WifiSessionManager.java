@@ -1,4 +1,4 @@
-package com.example.skywo.wifilistdemo.fg.manager;
+package com.example.skywo.wifilistdemo.fg.model.impl;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
@@ -8,12 +8,19 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.example.skywo.wifilistdemo.fg.bean.WifiBean;
+import com.example.skywo.wifilistdemo.fg.model.WifiSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WifiSessionManager {
+public class WifiSessionManager implements WifiSession {
     private static final String TAG = "WifiSessionManager";
+
+    @Override
+    public List<ScanResult> getWifiScanResult(Context context) {
+        return noSameName(((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults());
+    }
+
 
     public enum WifiCipherType {
         WIFICIPHER_WEP,
@@ -25,10 +32,11 @@ public class WifiSessionManager {
     public WifiSessionManager() {
     }
 
-    public static List<ScanResult> getWifiScanResult(Context context) {
-        boolean b = context == null;
-        return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults();
-    }
+
+//    public static List<ScanResult> getWifiScanResult(Context context) {
+//        boolean b = context == null;
+//        return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).getScanResults();
+//    }
 
     public static boolean isWifiEnable(Context context) {
         return ((WifiManager) context.getSystemService(Context.WIFI_SERVICE)).isWifiEnabled();

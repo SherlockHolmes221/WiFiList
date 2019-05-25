@@ -1,4 +1,4 @@
-package com.example.skywo.wifilistdemo.fg.view;
+package com.example.skywo.wifilistdemo.fg.UILib;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.skywo.wifilistdemo.R;
-import com.example.skywo.wifilistdemo.fg.manager.WifiSessionManager;
+import com.example.skywo.wifilistdemo.fg.model.impl.WifiSessionManager;
 
 public class WifiLinkDialog extends Dialog implements View.OnClickListener{
 
